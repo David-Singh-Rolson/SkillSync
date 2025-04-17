@@ -16,6 +16,7 @@ import EditLecture from "./pages/admin/lecture/EditLecture";
 import CourseDetail from "./pages/student/CourseDetail";
 import CourseProgress from "./pages/student/CourseProgress";
 import SearchPage from "./pages/student/SearchPage";
+import { TestTable } from "./pages/admin/assesment/testTable";
 import {
   AdminRoute,
   AuthenticatedUser,
@@ -23,7 +24,7 @@ import {
 } from "./components/ProtectedRoutes";
 import PurchaseCourseProtectedRoute from "./components/PurchaseCourseProtectedRoute";
 import { ThemeProvider } from "./components/ThemeProvider";
-
+import CreateTest from "./pages/admin/assesment/CreateTest";
 const appRouter = createBrowserRouter([
   {
     path: "/",
@@ -121,6 +122,14 @@ const appRouter = createBrowserRouter([
           {
             path: "course/:courseId/lecture/:lectureId",
             element: <EditLecture />,
+          },
+          {
+            path: "assessment",
+            element: <TestTable />,
+          },
+          {
+            path: "assessment/create-test",
+            element: <CreateTest />,
           },
         ],
       },
