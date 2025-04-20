@@ -14,7 +14,8 @@ export const questionApi=createApi({
                 method:"POST",
                 body:{...obj}
             }),
-        })
+        }),
+        // deleteQuestionById:
     })
 })
 

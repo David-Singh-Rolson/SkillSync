@@ -9,7 +9,7 @@ import { Loader2 } from "lucide-react";
 
 const HomePage = () => {
   const { data, isLoading,refetch } = useLoadUserQuery();
-console.log(data.user.role);
+// console.log(data.user.role);
 
 useEffect(() => {
   refetch();

@@ -95,3 +95,80 @@ export const addQuestionInAssessment=async (req,res) =>{
         
     }
 }
+
+export const getAddedQuestionsInAssessment=async (req,res)=>{
+    try {
+        const { assessmentId } = req.params;
+        if (!assessmentId ) {
+            return res.status(400).json({
+                message: "assessmentId is required!",
+                });
+        }
+        const assessment=await Test.findById(assessmentId).populate("questions").exec();
+        if(!assessment){
+            return res.status(404).json({
+                message:"Assessment id not found!"
+            })
+        }
+        return res.status(200).json({
+            assessment
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message:"Failed to get assessment"
+        })
+        
+    }
+}
+
+export const togglePublishAssessment=async (req,res) =>{
+    try {
+
+        const {assessmentId}=req.params;
+        const {publish}=req.query;
+        const assessment=await Test.findById(assessmentId)
+        if (!assessment) {
+            return res.status(404).json({
+                message:"Assessment not found!"
+            });
+        }
+
+        assessment.isPublished=publish==="true";
+        await assessment.save();
+
+        const statusMessage = assessment.isPublished ? "Published" : "Unpublished";
+        return res.status(200).json({
+            message:`Assessment is ${statusMessage}`
+        });
+        
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message:"Failed to update status"
+        })
+    }
+}
+
+// get Assessment by assessmentId
+
+export const getAssessmentById=async (req,res)=>{
+    try {
+        const {assessmentId}=req.params;
+        const assessment=await Test.findById(assessmentId);
+        if(!assessment){
+            return res.status(404).json({
+                message:"Assessment not found!"
+            })
+        }
+        return res.status(200).json({
+            assessment
+        })
+        
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message:"Failed to get assessment!"
+        })
+    }
+}

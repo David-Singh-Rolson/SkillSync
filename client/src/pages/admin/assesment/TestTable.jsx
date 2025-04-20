@@ -22,7 +22,7 @@ export const TestTable = () => {
   if (isLoading) {
     return <Loader2 />;
   }
-  // console.log(data);
+  console.log(data);
 
   return (
     <div>
@@ -42,8 +42,11 @@ export const TestTable = () => {
           {data.tests.map((test) => (
             <TableRow key={test._id}>
               <TableCell>
-                {" "}
-                <Badge>{test.isPublished ? "Published" : "Draft"}</Badge>{" "}
+                {/* {" "} */}
+                <Badge className={test.isPublished ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}>
+  {test.isPublished ? "Published" : "Draft"}
+</Badge>{" "}
+
               </TableCell>
               <TableCell>{test.testTitle}</TableCell>
               {/* <TableCell>{test.endTime}</TableCell> */}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import QuestionForm from "./QuestionForm";
 import SingleCorrectQuestion from "./SingleCorrectQuestion";
 import MultiCorrectQuestion from "./MultiCorrectQuestion";
@@ -12,7 +12,10 @@ import { useCreateNewQuestionMutation } from "@/features/api/questionApi";
 import { toast } from "sonner";
 import { useParams } from "react-router-dom";
 import { useAddQuestionMutation } from "@/features/api/assessmentApi";
+import { useGetQuestionByAssessmentIdQuery } from "@/features/api/assessmentApi";
 export default function CreateQuestions() {
+  const params = useParams();
+  const assessmentId=params.assessmentId
   const [question, setQuestion] = useState({
     questionText: "",
     topic: "",
@@ -29,8 +32,8 @@ export default function CreateQuestions() {
   const [questionList, setQuestionList] = useState([]);
 const [createNewQuestion,{data,isLoading,isSuccess,isError}]=useCreateNewQuestionMutation()
 const [addQuestion,{data:dataAddInAssessment,isLoading:addInAssLoading,isSuccess:addInAssSuccess}]=useAddQuestionMutation()
-  const params = useParams();
-const assessmentId=params.assessmentId
+const {data:getQuesByAssIdData,isLoading:getQuesLoading,isSuccess:getQuesSuccess,refetch: refetchQuestions}=useGetQuestionByAssessmentIdQuery(assessmentId)
+
   const handleChange = (field, value) => {
     setQuestion((prev) => ({
       ...prev,
@@ -38,8 +41,17 @@ const assessmentId=params.assessmentId
     }));
   };
 
+  useEffect(() => {
+   console.log("ques by  asssid",getQuesByAssIdData?.assessment?.questions);
+   
+  }, [getQuesByAssIdData])
+  
+
   const handleSubmit = async () => {
     try {
+      if (question.questionType === "TrueFalse") {
+        question.options = ["True", "False"];
+      }
       const res = await createNewQuestion(question).unwrap(); // unwrap to handle success/failure properly
       console.log("ques res",res);
 
@@ -48,7 +60,7 @@ const assessmentId=params.assessmentId
 
       const newRes=await addQuestion({assessmentId,questionId}).unwrap();
 
-      
+      await refetchQuestions();
       setQuestionList((prev) => [...prev, res.question || question]); // res.question if backend returns created object
   
       // Reset form
@@ -132,7 +144,8 @@ const assessmentId=params.assessmentId
     </div>
     <div className="max-w-3xl mx-auto p-6 bg-white shadow-xl rounded-xl space-y-6 my-2">
 
-      <QuestionList questions={questionList} setQuestions={setQuestionList}/>
+      <QuestionList  questions={getQuesByAssIdData?.assessment?.questions || []}
+  setQuestions={setQuestionList}/>
     </div>
       </>
   );

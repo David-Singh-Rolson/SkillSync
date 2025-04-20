@@ -54,9 +54,32 @@ export const assessmentApi = createApi({
         method:"PUT",
         body:{questionId}
       }),
-      // invalidatesTags :["Refetch-Creator-Assessment"]
-    })
-  })
+      invalidatesTags: (result, error, { assessmentId }) => [
+        { type: "Refetch-Creator-Assessment", id: assessmentId }
+      ]
+    }),
+    getQuestionByAssessmentId:builder.query({
+      query:(assessmentId)=>({
+        url: `/${assessmentId}/questions`,
+        method:"GET",
+      }),
+      providesTags: (result, error, assessmentId) => [
+        { type: "Refetch-Creator-Assessment", id: assessmentId }
+      ],
+    }),
+    publishAssessment: builder.mutation({
+      query:({assessmentId,query})=>({
+        url:`/${assessmentId}?publish=${query}`,
+        method:"PATCH",
+      }),
+    }),
+    getAssessmentById:builder.query({
+      query:(assessmentId)=>({
+        url: `/${assessmentId}`,
+        method:"GET",
+      }),
+    }),
+  }),
 });
 
-export const { useCreateAssessmentMutation,useGetCreatorAssessmentQuery ,useAddQuestionMutation} = assessmentApi;
+export const { useCreateAssessmentMutation,useGetCreatorAssessmentQuery ,useAddQuestionMutation,useGetQuestionByAssessmentIdQuery,usePublishAssessmentMutation,useGetAssessmentByIdQuery} = assessmentApi;
