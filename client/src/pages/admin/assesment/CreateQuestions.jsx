@@ -8,8 +8,10 @@ import IntegerQuestion from "./IntegerQuestion";
 import { Button } from "@/components/ui/button";
 import QuestionPreview from "./QuestionPreview";
 import QuestionList from "./QuestionList";
-import { useAddQuestionMutation } from "@/features/api/questionApi";
+import { useCreateNewQuestionMutation } from "@/features/api/questionApi";
 import { toast } from "sonner";
+import { useParams } from "react-router-dom";
+import { useAddQuestionMutation } from "@/features/api/assessmentApi";
 export default function CreateQuestions() {
   const [question, setQuestion] = useState({
     questionText: "",
@@ -25,8 +27,10 @@ export default function CreateQuestions() {
   });
   const [showPreview, setShowPreview] = useState(false);
   const [questionList, setQuestionList] = useState([]);
-const [addQuestion,{data,isLoading,isSuccess,isError}]=useAddQuestionMutation()
-
+const [createNewQuestion,{data,isLoading,isSuccess,isError}]=useCreateNewQuestionMutation()
+const [addQuestion,{data:dataAddInAssessment,isLoading:addInAssLoading,isSuccess:addInAssSuccess}]=useAddQuestionMutation()
+  const params = useParams();
+const assessmentId=params.assessmentId
   const handleChange = (field, value) => {
     setQuestion((prev) => ({
       ...prev,
@@ -36,7 +40,15 @@ const [addQuestion,{data,isLoading,isSuccess,isError}]=useAddQuestionMutation()
 
   const handleSubmit = async () => {
     try {
-      const res = await addQuestion(question).unwrap(); // unwrap to handle success/failure properly
+      const res = await createNewQuestion(question).unwrap(); // unwrap to handle success/failure properly
+      console.log("ques res",res);
+
+      const questionId=res.currentQuestion._id;
+      console.log("ques id",questionId);
+
+      const newRes=await addQuestion({assessmentId,questionId}).unwrap();
+
+      
       setQuestionList((prev) => [...prev, res.question || question]); // res.question if backend returns created object
   
       // Reset form

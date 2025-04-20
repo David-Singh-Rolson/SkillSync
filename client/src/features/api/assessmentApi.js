@@ -48,7 +48,15 @@ export const assessmentApi = createApi({
       }),
       providesTags :["Refetch-Creator-Assessment"]
     }),
+    addQuestion :builder.mutation({
+      query:({questionId,assessmentId})=>({
+        url:`/${assessmentId}`,
+        method:"PUT",
+        body:{questionId}
+      }),
+      // invalidatesTags :["Refetch-Creator-Assessment"]
+    })
   })
 });
 
-export const { useCreateAssessmentMutation,useGetCreatorAssessmentQuery } = assessmentApi;
+export const { useCreateAssessmentMutation,useGetCreatorAssessmentQuery ,useAddQuestionMutation} = assessmentApi;

@@ -20,7 +20,6 @@ export const createQuestion = async (req, res) => {
         !questionText ||
         !topic ||
         !difficulty ||
-        marks == null ||
         !questionType
       ) {
         return res.status(400).json({

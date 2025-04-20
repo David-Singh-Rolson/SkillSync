@@ -58,3 +58,40 @@ export const getAllCreatorAssessments= async (req,res) =>{
         })
     }
 }
+
+export const addQuestionInAssessment=async (req,res) =>{
+    try {
+        const { assessmentId } = req.params;
+        const { questionId } = req.body;
+        // const {assessmentId,questionId}=req.body
+        console.log("ass id from add ques in ass contr",assessmentId);
+        console.log("ques id from add ques in ass contr",questionId);
+        
+        if (!assessmentId || !questionId) {
+            return res.status(400).json({
+              message: "assessmentId and questionId are required",
+            });
+          }
+          const assessment = await Test.findByIdAndUpdate(
+            assessmentId,
+            { $push: { questions: questionId } },
+            { new: true }
+          ).populate("questions");
+        if(!assessment){
+            return res.status(404).json({
+                assessment:[],
+                message:"No Assessment Found"
+            })
+        }
+        return res.status(200).json({
+            assessment,
+            message: "Question added to assessment successfully",
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message:"Failed to add question in assessment!"
+        })
+        
+    }
+}

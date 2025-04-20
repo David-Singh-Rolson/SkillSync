@@ -8,7 +8,7 @@ export const questionApi=createApi({
         credentials:"include"
     }),
     endpoints:(builder)=>({
-        addQuestion:builder.mutation({
+        createNewQuestion:builder.mutation({
             query:(obj) =>({
                 url:"/",
                 method:"POST",
@@ -18,4 +18,4 @@ export const questionApi=createApi({
     })
 })
 
-export const {useAddQuestionMutation}=questionApi
+export const {useCreateNewQuestionMutation}=questionApi
