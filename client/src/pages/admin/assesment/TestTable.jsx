@@ -12,17 +12,20 @@ import {
 } from "@/components/ui/table";
 import { useGetCreatorCourseQuery } from "@/features/api/courseApi";
 import { Edit, Loader2 } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGetCreatorAssessmentQuery } from "@/features/api/assessmentApi";
 import { format } from "date-fns";
 export const TestTable = () => {
   const navigate = useNavigate();
-  const { data, isLoading } = useGetCreatorAssessmentQuery();
+  const { data, isLoading,refetch } = useGetCreatorAssessmentQuery();
   if (isLoading) {
     return <Loader2 />;
   }
   console.log(data);
+
+
+  
 
   return (
     <div>
