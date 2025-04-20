@@ -1,5 +1,4 @@
-
-
+import { DatePicker } from "@/components/DatePicker";
 import RichTextEditor from "@/components/RichTextEditor";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,57 +20,33 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useCreateAssessmentMutation } from "@/features/api/assessmentApi";
-import {
-  useEditCourseMutation,
-  useGetCourseByIdQuery,
-  usePublishCourseMutation,
-} from "@/features/api/courseApi";
 import { Loader2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 
 const CreateTest = () => {
-  
-    const [input, setInput] = useState({
-        testTitle: "",
-        testDescription: "",
-        instruction: "",
-        category: "",
-        testLevel: "",
-        testType: "",
-        timeLimit: "",
-        totalMarks: "",
-      });
+  const [input, setInput] = useState({
+    testTitle: "",
+    testDescription: "",
+    instructions: "",
+    category: "",
+    testLevel: "",
+    testType: "",
+    timeLimit: "",
+    totalMarks: "",
+    startTime: "",
+    endTime: "",
+    isScheduled: "",
+  });
 
   const params = useParams();
   const testId = params.testId;
-//   const { data: courseByIdData, isLoading: courseByIdLoading , refetch} =
-    // useGetCourseByIdQuery(courseId);
 
-    const [createAssessment,{data,error,isSuccess,isLoading}]=useCreateAssessmentMutation();
-
-    // const [publishCourse, {}] = usePublishCourseMutation();
- 
-//   useEffect(() => {
-//     if (courseByIdData?.course) { 
-//         const course = courseByIdData?.course;
-//       setInput({
-//         courseTitle: course.courseTitle,
-//         subTitle: course.subTitle,
-//         description: course.description,
-//         category: course.category,
-//         courseLevel: course.courseLevel,
-//         coursePrice: course.coursePrice,
-//         courseThumbnail: "",
-//       });
-//     }
-//   }, [courseByIdData]);
+  const [createAssessment, { data, error, isSuccess, isLoading }] =
+    useCreateAssessmentMutation();
 
   const navigate = useNavigate();
-
-//   const [editCourse, { data, isLoading, isSuccess, error }] =
-//     useEditCourseMutation();
 
   const changeEventHandler = (e) => {
     const { name, value } = e.target;
@@ -87,51 +62,34 @@ const CreateTest = () => {
   const selectTestType = (value) => {
     setInput({ ...input, testType: value });
   };
- 
+  const selectScheduleType = (value) => {
+    setInput({ ...input, isScheduled: value === "Timed" });
+  };
 
-//   const updateTestHandler = async () => {
-//     const formData = new FormData();
-//     formData.append("testTitle", input.testTitle);
-//     formData.append("description", input.description);
-//     formData.append("instruction", input.instruction);
-//     formData.append("category", input.category);
-//     formData.append("testLevel", input.testLevel);
-//     formData.append("testType", input.testType);
-//     formData.append("timeLimit", input.timeLimit);
-//     formData.append("totalMarks", input.totalMarks);
+  //   const updateTestHandler = async () => {
+  //     const formData = new FormData();
+  //     formData.append("testTitle", input.testTitle);
+  //     formData.append("description", input.description);
+  //     formData.append("instruction", input.instruction);
+  //     formData.append("category", input.category);
+  //     formData.append("testLevel", input.testLevel);
+  //     formData.append("testType", input.testType);
+  //     formData.append("timeLimit", input.timeLimit);
+  //     formData.append("totalMarks", input.totalMarks);
 
-//     await editCourse({ formData, courseId });
-//   };
+  //     await editCourse({ formData, courseId });
+  //   };
 
-  const CreateAssessmentHandler= async ()=>{
-        // console.log(input);
-        const res = await createAssessment({...input})
-        console.log(res);
-        
-  }
-//   const publishStatusHandler = async (action) => {
-//     try {
-//       const response = await publishCourse({courseId, query:action});
-//       if(response.data){
-//         refetch();
-//         toast.success(response.data.message);
-//       }
-//     } catch (error) {
-//       toast.error("Failed to publish or unpublish course");
-//     }
-//   }
+  const CreateAssessmentHandler = async () => {
+    try {
+      const res = await createAssessment({ ...input }).unwrap(); // unwrap to get actual response
+      toast.success("Assessment Created Successfully");
+      navigate("/admin/assessment");
+    } catch (err) {
+      toast.error(err?.data?.message || "Something went wrong!");
+    }
+  };
 
-//   useEffect(() => {
-//     if (isSuccess) {
-//       toast.success(data.message || "Course update.");
-//     }
-//     if (error) {
-//       toast.error(error.data.message || "Failed to update course");
-//     }
-//   }, [isSuccess, error]);
-
-//   if(courseByIdLoading) return <h1>Loading...</h1>
- 
   return (
     <Card>
       <CardHeader className="flex flex-row justify-between">
@@ -141,15 +99,9 @@ const CreateTest = () => {
             Make changes to your Test here. Click save when you're done.
           </CardDescription>
         </div>
-        <div className="space-x-2">
-          {/* <Button disabled={courseByIdData?.course.lectures.length === 0} variant="outline" onClick={()=> publishStatusHandler(courseByIdData?.course.isPublished ? "false" : "true")}>
-            {courseByIdData?.course.isPublished ? "Unpublished" : "Publish"}
-          </Button> */}
-          <Button>Remove Test</Button>
-        </div>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4 mt-5">
+        <div className="space-y-4 mt-5 ">
           <div>
             <Label>Title</Label>
             <Input
@@ -170,21 +122,15 @@ const CreateTest = () => {
               placeholder="Ex. DBMS"
             />
           </div>
-          {/* <div>
-            <Label>Subtitle</Label>
-            <Input
-              type="text"
-              name="subTitle"
-              value={input.subTitle}
-              onChange={changeEventHandler}
-              placeholder="Ex. Become a Fullstack developer from zero to hero in 2 months"
-            />
-          </div> */}
           <div>
             <Label>Instructions</Label>
-            <RichTextEditor input={input} setInput={setInput} field="instruction"/>
+            <RichTextEditor
+              input={input}
+              setInput={setInput}
+              field="instructions"
+            />
           </div>
-          <div className="flex items-center gap-5">
+          <div className="flex items-center gap-5 flex-wrap">
             <div>
               <Label>Category</Label>
               <Select
@@ -249,7 +195,7 @@ const CreateTest = () => {
                   <SelectGroup>
                     <SelectLabel>Test Type</SelectLabel>
                     <SelectItem value="Mixed">Mixed</SelectItem>
-                    <SelectItem value="Topic-wise">Topic Wise</SelectItem>
+                    <SelectItem value="Topic">Topic Wise</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
@@ -276,25 +222,60 @@ const CreateTest = () => {
                 className="w-fit"
               />
             </div>
-          </div>
-          {/* <div>
-            <Label>Course Thumbnail</Label>
-            <Input
-              type="file"
-              onChange={selectThumbnail}
-              accept="image/*"
-              className="w-fit"
-            />
-            {previewThumbnail && (
-              <img
-                src={previewThumbnail}
-                className="e-64 my-2"
-                alt="Course Thumbnail"
+            <div>
+              <Label>Scheduled</Label>
+              <Select
+                defaultValue={input.isScheduled}
+                onValueChange={selectScheduleType}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Select a Schedule Type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Schedule Type</SelectLabel>
+                    <SelectItem value="Timed">Timed</SelectItem>
+                    <SelectItem value="Always">Always Available</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex flex-col space-y-1">
+              <Label>Start Time</Label>
+              <DatePicker
+                disabled={!input.isScheduled}
+                value={input.startTime}
+                onChange={(date) =>
+                  setInput((prev) => ({ ...prev, startTime: date }))
+                }
               />
-            )}
-          </div> */}
+              {!input.isScheduled && (
+                <p className="text-xs text-muted-foreground mt-1">
+                  Select "Timed" to enable scheduling.
+                </p>
+              )}
+            </div>
+            <div className="flex flex-col space-y-1">
+              <Label>End Time</Label>
+              <DatePicker
+                disabled={!input.isScheduled}
+                value={input.endTime}
+                onChange={(date) =>
+                  setInput((prev) => ({ ...prev, endTime: date }))
+                }
+              />
+              {!input.isScheduled && (
+                <p className="text-xs text-muted-foreground mt-1">
+                  Select "Timed" to enable scheduling.
+                </p>
+              )}
+            </div>
+          </div>
           <div>
-            <Button onClick={() => navigate("/admin/assessment")} variant="outline">
+            <Button
+              onClick={() => navigate("/admin/assessment")}
+              variant="outline"
+            >
               Cancel
             </Button>
             <Button disabled={isLoading} onClick={CreateAssessmentHandler}>
@@ -315,6 +296,3 @@ const CreateTest = () => {
 };
 
 export default CreateTest;
-
-
-

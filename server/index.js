@@ -9,6 +9,7 @@ import mediaRoute from "./routes/media.route.js";
 import purchaseRoute from "./routes/purchaseCourse.route.js";
 import courseProgressRoute from "./routes/courseProgress.route.js";
 import assessmentRoute from "./routes/assessment.route.js"
+import questionRoute from "./routes/question.route.js"
 dotenv.config({});
 
 // call database connection here
@@ -33,6 +34,7 @@ app.use("/api/v1/course", courseRoute);
 app.use("/api/v1/purchase", purchaseRoute);
 app.use("/api/v1/progress", courseProgressRoute);
 app.use("/api/v1/assessment", assessmentRoute);
+app.use("/api/v1/question", questionRoute);
  
  
 app.listen(PORT, () => {

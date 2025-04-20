@@ -36,7 +36,7 @@ const Profile = () => {
     },
   ] = useUpdateUserMutation();
 
-  console.log(data);
+  console.log("profile data",data);
 
   const onChangeHandler = (e) => {
     const file = e.target.files?.[0];

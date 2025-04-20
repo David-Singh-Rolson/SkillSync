@@ -19,6 +19,12 @@ const testSchema = new mongoose.Schema({
     default: "Topic",
     required:true
   },
+  testLevel: {
+    type: String,
+    enum: ["Beginner", "Medium","Advance"],
+    default: "Beginner",
+    // required:true
+  },
   timeLimit: {
     type: Number, // in minutes
     required: true,
@@ -41,6 +47,19 @@ const testSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  startTime: {
+    type: Date,
+    default: null,
+  },
+  endTime: {
+    type: Date,
+    default: null,
+  },
+  isScheduled: {
+    type: Boolean,
+    default: false, // false means it's open anytime
+  },
+  
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User", // Teacher now, can be Admin later

@@ -1,0 +1,7 @@
+1.. make modal
+2.. make controller
+3.. create route
+4.. add in index.js file api route
+5.. create api
+6.. root reducer
+7.. provide middleware in store.js

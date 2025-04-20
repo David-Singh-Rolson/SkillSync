@@ -9,13 +9,15 @@ export const authApi = createApi({
         baseUrl:USER_API,
         credentials:'include'
     }),
+    tagTypes: ['User'],
     endpoints: (builder) => ({
         registerUser: builder.mutation({
             query: (inputData) => ({
                 url:"register",
                 method:"POST",
                 body:inputData
-            })
+            }),
+            invalidatesTags: ['User'],
         }),
         loginUser: builder.mutation({
             query: (inputData) => ({
@@ -30,7 +32,8 @@ export const authApi = createApi({
                 } catch (error) {
                     console.log(error);
                 }
-            }
+            },
+            invalidatesTags: ['User'],
         }),
         logoutUser: builder.mutation({
             query: () => ({
@@ -43,7 +46,8 @@ export const authApi = createApi({
                 } catch (error) {
                     console.log(error);
                 }
-            }
+            },
+            invalidatesTags: ['User'],
         }),
         loadUser: builder.query({
             query: () => ({
@@ -57,7 +61,8 @@ export const authApi = createApi({
                 } catch (error) {
                     console.log(error);
                 }
-            }
+            },
+            providesTags: ['User'],
         }),
         updateUser: builder.mutation({
             query: (formData) => ({
@@ -65,9 +70,11 @@ export const authApi = createApi({
                 method:"PUT",
                 body:formData,
                 credentials:"include"
-            })
+            }),
+            invalidatesTags: ['User'],
         })
     })
+    
 });
 export const {
     useRegisterUserMutation,

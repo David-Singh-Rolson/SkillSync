@@ -1,0 +1,534 @@
+// create ques
+
+// // import {
+// //   Card,
+// //   CardHeader,
+// //   CardTitle,
+// //   CardContent,
+// //   CardFooter
+// // } from "@/components/ui/card";
+// // import { Button } from "@/components/ui/button";
+// // import { Input } from "@/components/ui/input";
+// // import { Textarea } from "@/components/ui/textarea";
+// // import { Label } from "@/components/ui/label";
+// // import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+// // import { useState } from "react";
+// // import { PlusIcon, Trash2 } from "lucide-react";
+
+// // const defaultOption = ["", "", "", ""];
+
+// // export const CreateQuestions = () => {
+// //   const [question, setQuestion] = useState({
+// //     questionText: "",
+// //     options: defaultOption,
+// //     correctOptionIndex: 0,
+// //     topic: "",
+// //     difficulty: "Medium",
+// //     marks: 1,
+// //     questionType: "SingleCorrect",
+// //   });
+
+// //   const handleOptionChange = (index, value) => {
+// //     const newOptions = [...question.options];
+// //     newOptions[index] = value;
+// //     setQuestion((prev) => ({ ...prev, options: newOptions }));
+// //   };
+
+// //   const handleSubmit = () => {
+// //     console.log("Submit Question:", question);
+// //     // Send to backend / connect with test ID
+// //   };
+
+// //   return (
+// //     <Card className="w-full max-w-4xl mx-auto shadow-md dark:bg-gray-800">
+// //       <CardHeader>
+// //         <CardTitle className="text-xl">Add Question</CardTitle>
+// //       </CardHeader>
+
+// //       <CardContent className="space-y-4">
+// //         <div>
+// //           <Label>Question Text</Label>
+// //           <Textarea
+// //             value={question.questionText}
+// //             onChange={(e) => setQuestion({ ...question, questionText: e.target.value })}
+// //             placeholder="Enter the question..."
+// //           />
+// //         </div>
+
+// //         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+// //           {question.options.map((opt, idx) => (
+// //             <div key={idx}>
+// //               <Label>Option {idx + 1}</Label>
+// //               <Input
+// //                 value={opt}
+// //                 onChange={(e) => handleOptionChange(idx, e.target.value)}
+// //                 placeholder={`Enter option ${idx + 1}`}
+// //               />
+// //             </div>
+// //           ))}
+// //         </div>
+
+// //         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+// //           <div>
+// //             <Label>Correct Option Index</Label>
+// //             <Input
+// //               type="number"
+// //               min="0"
+// //               max="3"
+// //               value={question.correctOptionIndex}
+// //               onChange={(e) =>
+// //                 setQuestion({ ...question, correctOptionIndex: parseInt(e.target.value) })
+// //               }
+// //             />
+// //           </div>
+
+// //           <div>
+// //             <Label>Topic</Label>
+// //             <Input
+// //               value={question.topic}
+// //               onChange={(e) => setQuestion({ ...question, topic: e.target.value })}
+// //               placeholder="e.g. DBMS"
+// //             />
+// //           </div>
+
+// //           <div>
+// //             <Label>Difficulty</Label>
+// //             <Select
+// //               value={question.difficulty}
+// //               onValueChange={(val) => setQuestion({ ...question, difficulty: val })}
+// //             >
+// //               <SelectTrigger>
+// //                 <SelectValue placeholder="Select difficulty" />
+// //               </SelectTrigger>
+// //               <SelectContent>
+// //                 <SelectItem value="Easy">Easy</SelectItem>
+// //                 <SelectItem value="Medium">Medium</SelectItem>
+// //                 <SelectItem value="Hard">Hard</SelectItem>
+// //               </SelectContent>
+// //             </Select>
+// //           </div>
+
+// //           <div>
+// //             <Label>Marks</Label>
+// //             <Input
+// //               type="number"
+// //               value={question.marks}
+// //               onChange={(e) => setQuestion({ ...question, marks: parseInt(e.target.value) })}
+// //             />
+// //           </div>
+// //         </div>
+
+// //         <div>
+// //           <Label>Question Type</Label>
+// //           <Select
+// //             value={question.questionType}
+// //             onValueChange={(val) => setQuestion({ ...question, questionType: val })}
+// //           >
+// //             <SelectTrigger>
+// //               <SelectValue placeholder="Select question type" />
+// //             </SelectTrigger>
+// //             <SelectContent>
+// //               <SelectItem value="SingleCorrect">SingleCorrect</SelectItem>
+// //               <SelectItem value="TrueFalse">True / False</SelectItem>
+// //               <SelectItem value="ShortAnswer">Short Answer</SelectItem>
+// //             </SelectContent>
+// //           </Select>
+// //         </div>
+// //       </CardContent>
+
+// //       <CardFooter className="flex justify-end">
+// //         <Button onClick={handleSubmit} className="flex items-center gap-2">
+// //           <PlusIcon size={18} /> Add Question
+// //         </Button>
+// //       </CardFooter>
+// //     </Card>
+// //   );
+// // };
+
+// // export default CreateQuestions;
+
+// // import {
+// //   Button,
+// //   Input,
+// //   Label,
+// //   Textarea,
+// //   Select,
+// //   SelectTrigger,
+// //   SelectValue,
+// //   SelectContent,
+// //   SelectItem,
+// //   Dialog,
+// //   DialogTrigger,
+// //   DialogContent,
+// //   DialogHeader,
+// //   DialogTitle,
+// //   DialogFooter,
+// //   ScrollArea
+// // } from "@/components/ui";
+// import { useState } from "react";
+// import { Button } from "@/components/ui/button";
+// import { Input } from "@/components/ui/input";
+// import { Label } from "@/components/ui/label";
+// import { Textarea } from "@/components/ui/textarea";
+// import { Select, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
+// import { SelectTrigger } from "@/components/ui/select";
+
+// import { PlusIcon, Trash2, EyeIcon } from "lucide-react";
+// import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+// import { ScrollArea } from "@/components/ui/scroll-area";
+
+// const defaultOption = [""];
+
+// export default function CreateQuestions() {
+//   const [questions, setQuestions] = useState([]);
+//   const [question, setQuestion] = useState({
+//     questionText: "",
+//     options: defaultOption,
+//     correctOptionIndex: 0,
+//     topic: "",
+//     difficulty: "Medium",
+//     marks: 1,
+//     questionType: "SingleCorrect", // or "TrueFalse", "ShortAnswer", "Integer"
+//   });
+
+//   const resetQuestion = () => {
+//     setQuestion({
+//       questionText: "",
+//       options: [""],
+//       correctOptionIndex: 0,
+//       topic: "",
+//       difficulty: "Medium",
+//       marks: 1,
+//       questionType: "SingleCorrect",
+//     });
+//   };
+
+//   const handleAddOption = () => {
+//     setQuestion((prev) => ({
+//       ...prev,
+//       options: [...prev.options, ""],
+//     }));
+//   };
+
+//   const handleOptionChange = (index, value) => {
+//     const updatedOptions = [...question.options];
+//     updatedOptions[index] = value;
+//     setQuestion((prev) => ({ ...prev, options: updatedOptions }));
+//   };
+
+//   const handleRemoveOption = (index) => {
+//     const updated = [...question.options];
+//     updated.splice(index, 1);
+//     setQuestion((prev) => ({ ...prev, options: updated }));
+//   };
+
+//   const handleAddQuestion = () => {
+//     setQuestions((prev) => [...prev, question]);
+//     resetQuestion();
+//   };
+
+//   const renderOptionsInput = () => {
+//     if (question.questionType === "TrueFalse") {
+//       return (
+//         <div className="grid grid-cols-2 gap-4">
+//           {["True", "False"].map((opt, idx) => (
+//             <div key={idx}>
+//               <Label>Option {idx + 1}</Label>
+//               <Input value={opt} disabled />
+//             </div>
+//           ))}
+//         </div>
+//       );
+//     }
+
+//     if (question.questionType === "ShortAnswer" || question.questionType === "Integer") {
+//       return (
+//         <div>
+//           <Label>Correct Answer</Label>
+//           <Input
+//             placeholder="Enter correct answer"
+//             value={question.correctOptionIndex}
+//             onChange={(e) =>
+//               setQuestion({ ...question, correctOptionIndex: e.target.value })
+//             }
+//           />
+//         </div>
+//       );
+//     }
+
+//     return (
+//       <div className="space-y-4">
+//         {question.options.map((opt, idx) => (
+//           <div key={idx} className="flex gap-2 items-center">
+//             <Input
+//               className="flex-1"
+//               placeholder={`Option ${idx + 1}`}
+//               value={opt}
+//               onChange={(e) => handleOptionChange(idx, e.target.value)}
+//             />
+//             <Button variant="ghost" onClick={() => handleRemoveOption(idx)}>
+//               <Trash2 className="h-4 w-4" />
+//             </Button>
+//           </div>
+//         ))}
+//         <Button onClick={handleAddOption} variant="secondary" className="w-full">
+//           <PlusIcon className="w-4 h-4 mr-1" /> Add Option
+//         </Button>
+
+//         <div>
+//           <Label>Correct Option Index (starts from 0)</Label>
+//           <Input
+//             type="number"
+//             min={0}
+//             max={question.options.length - 1}
+//             value={question.correctOptionIndex}
+//             onChange={(e) =>
+//               setQuestion({
+//                 ...question,
+//                 correctOptionIndex: parseInt(e.target.value),
+//               })
+//             }
+//           />
+//         </div>
+//       </div>
+//     );
+//   };
+
+//   return (
+//     <div className="max-w-3xl mx-auto mt-6 space-y-6">
+//       <div className="space-y-4 bg-white dark:bg-gray-900 border rounded-xl p-6 shadow">
+//         <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">
+//           Add New Question
+//         </h2>
+
+//         <div className="space-y-4">
+//           <div>
+//             <Label>Question Type</Label>
+//             <Select
+//               value={question.questionType}
+//               onValueChange={(val) =>
+//                 setQuestion({ ...question, questionType: val })
+//               }
+//             >
+//               <SelectTrigger>
+//                 <SelectValue placeholder="Select question type" />
+//               </SelectTrigger>
+//               <SelectContent>
+//               <SelectItem value="SingleCorrect">Single Correct</SelectItem>
+//                 <SelectItem value="TrueFalse">True / False</SelectItem>
+//                 <SelectItem value="MultiCorrect">Multi Correct</SelectItem>
+//                 <SelectItem value="ShortAnswer">Short Answer</SelectItem>
+//                 <SelectItem value="Integer">Integer</SelectItem>
+//               </SelectContent>
+//             </Select>
+//           </div>
+
+//           <div>
+//             <Label>Question Text</Label>
+//             <Textarea
+//               placeholder="Enter question..."
+//               value={question.questionText}
+//               onChange={(e) =>
+//                 setQuestion({ ...question, questionText: e.target.value })
+//               }
+//             />
+//           </div>
+
+//           {renderOptionsInput()}
+
+//           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+//             <div>
+//               <Label>Topic</Label>
+//               <Input
+//                 placeholder="e.g. DBMS"
+//                 value={question.topic}
+//                 onChange={(e) =>
+//                   setQuestion({ ...question, topic: e.target.value })
+//                 }
+//               />
+//             </div>
+
+//             <div>
+//               <Label>Difficulty</Label>
+//               <Select
+//                 value={question.difficulty}
+//                 onValueChange={(val) =>
+//                   setQuestion({ ...question, difficulty: val })
+//                 }
+//               >
+//                 <SelectTrigger>
+//                   <SelectValue placeholder="Select" />
+//                 </SelectTrigger>
+//                 <SelectContent>
+//                   <SelectItem value="Easy">Easy</SelectItem>
+//                   <SelectItem value="Medium">Medium</SelectItem>
+//                   <SelectItem value="Hard">Hard</SelectItem>
+//                 </SelectContent>
+//               </Select>
+//             </div>
+
+//             <div>
+//               <Label>Marks</Label>
+//               <Input
+//                 type="number"
+//                 value={question.marks}
+//                 onChange={(e) =>
+//                   setQuestion({ ...question, marks: parseInt(e.target.value) })
+//                 }
+//               />
+//             </div>
+//           </div>
+
+//           <Button onClick={handleAddQuestion}>
+//             <PlusIcon className="w-4 h-4 mr-1" /> Add to List
+//           </Button>
+
+//           <Dialog>
+//             <DialogTrigger asChild>
+//               <Button variant="outline">
+//                 <EyeIcon className="w-4 h-4 mr-1" /> Preview Questions
+//               </Button>
+//             </DialogTrigger>
+//             <DialogContent className="max-w-3xl">
+//               <DialogHeader>
+//                 <DialogTitle>Questions Preview</DialogTitle>
+//               </DialogHeader>
+
+//               <ScrollArea className="h-96 pr-2 space-y-6">
+//                 {questions.map((q, i) => (
+//                   <div
+//                     key={i}
+//                     className="border border-gray-300 dark:border-gray-700 p-4 rounded-lg space-y-2"
+//                   >
+//                     <h4 className="font-semibold text-lg text-gray-800 dark:text-gray-100">
+//                       Q{i + 1}. {q.questionText}
+//                     </h4>
+//                     <p className="text-sm text-gray-600 dark:text-gray-300">
+//                       Type: {q.questionType} | Topic: {q.topic} | Marks:{" "}
+//                       {q.marks} | Difficulty: {q.difficulty}
+//                     </p>
+//                     {q.questionType === "SingleCorrect" || q.questionType === "TrueFalse" ? (
+//                       <ul className="list-disc pl-5 text-gray-700 dark:text-gray-200">
+//                         {q.options.map((opt, idx) => (
+//                           <li
+//                             key={idx}
+//                             className={
+//                               idx === parseInt(q.correctOptionIndex)
+//                                 ? "font-semibold text-green-600 dark:text-green-400"
+//                                 : ""
+//                             }
+//                           >
+//                             {opt}
+//                           </li>
+//                         ))}
+//                       </ul>
+//                     ) : (
+//                       <p>
+//                         Correct Answer:{" "}
+//                         <span className="font-semibold text-green-600 dark:text-green-400">
+//                           {q.correctOptionIndex}
+//                         </span>
+//                       </p>
+//                     )}
+//                   </div>
+//                 ))}
+//               </ScrollArea>
+
+//               <DialogFooter>
+//                 <Button variant="default">Save All</Button>
+//               </DialogFooter>
+//             </DialogContent>
+//           </Dialog>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
+
+
+ques Preview
+
+// export default function QuestionPreview({ question }) {
+//     if (!question) return null;
+  
+//     const {
+//       questionText,
+//       topic,
+//       difficulty,
+//       marks,
+//       questionType,
+//       options = [],
+//       correctOptionIndex,
+//       correctOptionIndexes = [],
+//       correctAnswer,
+//     } = question;
+  
+//     return (
+//       <div className="p-4 mt-6 border border-gray-300 rounded-md bg-gray-50 space-y-4">
+//         <h2 className="text-xl font-semibold text-gray-700">Preview</h2>
+  
+//         <div className="text-gray-800">
+//           <p><strong>Question:</strong> {questionText}</p>
+//           <p><strong>Topic:</strong> {topic}</p>
+//           <p><strong>Difficulty:</strong> {difficulty}</p>
+//           <p><strong>Marks:</strong> {marks}</p>
+//           <p><strong>Type:</strong> {questionType}</p>
+//         </div>
+  
+//         <div className="pl-4 space-y-2">
+//           {questionType === "SingleCorrect" && options.map((opt, idx) => (
+//             <div key={idx} className="flex items-center gap-2">
+//               <input type="radio" disabled defaultChecked={correctOptionIndex === idx} />
+//               <label>{opt}</label>
+//             </div>
+//           ))}
+  
+//           {questionType === "MultiCorrect" && options.map((opt, idx) => (
+//             <div key={idx} className="flex items-center gap-2">
+//               <input
+//                 type="checkbox"
+//                 disabled
+//                 defaultChecked={correctOptionIndexes.includes(idx)}
+//               />
+//               <label>{opt}</label>
+//             </div>
+//           ))}
+  
+//           {questionType === "TrueFalse" && (
+//             <div className="flex flex-col gap-2">
+//               <label className="flex gap-2">
+//                 <input type="radio" disabled defaultChecked={correctAnswer === "true"} />
+//                 True
+//               </label>
+//               <label className="flex gap-2">
+//                 <input type="radio" disabled defaultChecked={correctAnswer === "false"} />
+//                 False
+//               </label>
+//             </div>
+//           )}
+  
+//           {(questionType === "ShortAnswer" || questionType === "Integer") && (
+//             <p className="text-gray-700"><strong>Answer:</strong> {correctAnswer}</p>
+//           )}
+//         </div>
+//       </div>
+//     );
+//   }
+  
+
+// import React from 'react'
+
+// const QuestionPreview = ({question}) => {
+//   return (
+//     <div>QuestionPreview ,  {JSON.stringify(question, null, 2)}</div>
+//   )
+// }
+
+// export default QuestionPreview
+
+
+// import { Label } from "@/components/ui/label";
+// import { Input } from "@/components/ui/input";

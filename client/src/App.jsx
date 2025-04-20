@@ -25,6 +25,12 @@ import {
 import PurchaseCourseProtectedRoute from "./components/PurchaseCourseProtectedRoute";
 import { ThemeProvider } from "./components/ThemeProvider";
 import CreateTest from "./pages/admin/assesment/CreateTest";
+import CreateQuestions from "./pages/admin/assesment/CreateQuestions";
+import Assessments from "./pages/student/Assessments";
+import RecommendedCourses from "./pages/student/RecommendedCourses";
+import { useLoadUserQuery } from "./features/api/authApi";
+import HomePage from "./layout/HomePage"
+import QuestionForm from "./pages/admin/assesment/QuestionForm";
 const appRouter = createBrowserRouter([
   {
     path: "/",
@@ -32,12 +38,7 @@ const appRouter = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: (
-          <>
-            <HeroSection />
-            <Courses />
-          </>
-        ),
+        element:<HomePage/>,
       },
       {
         path: "login",
@@ -130,6 +131,10 @@ const appRouter = createBrowserRouter([
           {
             path: "assessment/create-test",
             element: <CreateTest />,
+          },
+          {
+            path: "assessment/:assessmentId",
+            element: <CreateQuestions />,
           },
         ],
       },

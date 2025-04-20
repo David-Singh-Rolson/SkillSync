@@ -27,6 +27,7 @@ const ASSESSMENT_API = "http://localhost:8080/api/v1/assessment";
 
 export const assessmentApi = createApi({
   reducerPath: "assessmentApi",
+  tagTypes:["Refetch-Creator-Assessment"],
   baseQuery: fetchBaseQuery({
     baseUrl: ASSESSMENT_API,
     credentials: "include"
@@ -37,9 +38,17 @@ export const assessmentApi = createApi({
         url: "/",
         method: "POST",
         body: { ...obj }
-      })
-    })
+      }),
+      invalidatesTags :["Refetch-Creator-Assessment"]
+    }),
+    getCreatorAssessment: builder.query({
+      query: () => ({
+        url: "",
+        method: "GET",
+      }),
+      providesTags :["Refetch-Creator-Assessment"]
+    }),
   })
 });
 
-export const { useCreateAssessmentMutation } = assessmentApi;
+export const { useCreateAssessmentMutation,useGetCreatorAssessmentQuery } = assessmentApi;
