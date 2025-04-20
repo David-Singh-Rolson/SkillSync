@@ -46,7 +46,12 @@ export const assessmentApi = createApi({
         url: "",
         method: "GET",
       }),
-      providesTags :["Refetch-Creator-Assessment"]
+      providesTags: (result) =>
+        result?.tests?.map((test) => ({
+          type: "Refetch-Creator-Assessment",
+          id: test._id,
+        })) ?? [{ type: "Refetch-Creator-Assessment" }],
+    
     }),
     addQuestion :builder.mutation({
       query:({questionId,assessmentId})=>({
@@ -72,6 +77,9 @@ export const assessmentApi = createApi({
         url:`/${assessmentId}?publish=${query}`,
         method:"PATCH",
       }),
+      invalidatesTags: (result, error, { assessmentId }) => [
+        { type: "Refetch-Creator-Assessment", id: assessmentId },
+      ],
     }),
     getAssessmentById:builder.query({
       query:(assessmentId)=>({
