@@ -24,7 +24,7 @@ useEffect(() => {
     <>
       <HeroSection />
       {data?.user?.role === "student" && <RecommendedCourses />}
-      <Assessments />
+      <Assessments role={data?.user?.role} />
       <Courses />
     </>
   );

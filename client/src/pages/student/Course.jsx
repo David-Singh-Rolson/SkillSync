@@ -27,7 +27,13 @@ const Course = ({course}) => {
             </Avatar>
             <h1 className="font-medium text-sm">{course.creator?.name}</h1>
           </div>
-          <Badge className={'bg-blue-600 text-white px-2 py-1 text-xs rounded-full'}>
+          <Badge className={`text-white px-2 py-1 text-xs rounded-full ${
+                    course.courseLevel === "Beginner"
+                      ? "bg-green-600"
+                      : course.courseLevel === "Medium"
+                      ? "bg-yellow-500"
+                      : "bg-red-600"
+                  }`}>
             {course.courseLevel}
           </Badge>
         </div>

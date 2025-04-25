@@ -5,3 +5,59 @@
 5.. create api
 6.. root reducer
 7.. provide middleware in store.js
+
+
+
+Bonus (recommended ideas)
+Add allowReattempts: Boolean to Test in future if needed.
+
+
+the project is MVC architecture
+
+
+
+
+ Do we require POST for attempting a test (i.e., fetching test questions)?
+Short answer:
+Using **POST** is justifiable and often preferred in this case, even though you're "fetching" something — because you're sending sensitive or complex data (like assessmentId) and may want more flexibility/security.
+
+🔍 Why POST makes sense here:
+Sensitive Data:
+assessmentId or user-related context (e.g., time, location, etc.) may be sensitive and shouldn't go in the URL (which happens with GET).
+
+Future-proofing:
+You may later want to pass more info in the request body (e.g., for analytics, logging IP, device type, or eligibility logic). POST allows that.
+
+Cache Avoidance:
+GET requests can be cached by browsers or proxies. You don't want that for a test attempt, especially for time-sensitive data.
+
+Not Idempotent:
+Even though it’s just fetching questions, it might later log that the test was "started" — making the request non-idempotent (which POST suits better than GET).
+
+🆚 What if you used GET?
+If you used a route like:
+
+js
+Copy
+Edit
+GET /api/v1/test/attempt/:assessmentId
+You’d need to send assessmentId in the URL. It would work technically, but:
+
+You couldn't send additional metadata in the request body.
+
+You’d expose more data in logs, browser history, etc.
+
+It limits flexibility later.
+
+✅ Recommendation:
+Stick with:
+
+js
+Copy
+Edit
+POST /api/v1/test/attempt/
+…with assessmentId in the body — like you're doing now. It’s clean, scalable, and secure.
+
+Let me know if you’d like me to help you structure the submit test controller next!
+
+

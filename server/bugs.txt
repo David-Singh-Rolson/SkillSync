@@ -1,0 +1,39 @@
+1. Refetch not happening after creating a test
+2.
+
+
+
+
+
+
+  let isCorrect = false;
+      let marksAwarded = 0;
+
+      // Handle different question types
+      switch (question.questionType) {
+        case "SingleCorrect": // Single correct answer
+          isCorrect = response.selectedOptionIndex === question.correctOption[0]; // Assume correctOption is an array, but only one element for single questions
+          marksAwarded = isCorrect ? question.marks : 0;
+          break;
+        
+        case "MultiCorrect": // Multiple correct answers
+          const selectedOptions = response.selectedOptionIndexes || [];
+          // Check if the selected options exactly match the correct options
+          isCorrect = selectedOptions.length === question.correctOption.length && 
+                       selectedOptions.every(option => question.correctOption.includes(option));
+          marksAwarded = isCorrect ? question.marks : 0;
+          break;
+
+        case "TrueFalse": // True/False question
+          isCorrect = response.selectedOptionIndex === question.correctOption[0]; // 0 for False, 1 for True
+          marksAwarded = isCorrect ? question.marks : 0;
+          break;
+
+        case "Integer": // Integer-based question
+          isCorrect = response.selectedOptionIndex === question.correctOption[0]; // Assuming only one correct answer
+          marksAwarded = isCorrect ? question.marks : 0;
+          break;
+
+        default:
+          break;
+      }

@@ -1,5 +1,6 @@
 import { Skeleton } from '@/components/ui/skeleton';
 import React from 'react'
+import Course from './Course';
 
 const RecommendedCourses = () => {
     const isLoading=true;

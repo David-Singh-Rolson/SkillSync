@@ -1,6 +1,6 @@
 import express from "express";
 import isAuthenticated from "../middlewares/isAuthenticated.js";
-import { CreateAssessment, getAllCreatorAssessments ,addQuestionInAssessment,getAddedQuestionsInAssessment, togglePublishAssessment,getAssessmentById} from "../controllers/assessment.controllers.js";
+import { CreateAssessment, getAllCreatorAssessments ,addQuestionInAssessment,getAddedQuestionsInAssessment, togglePublishAssessment,getAssessmentById,getAllPublishedAssessment} from "../controllers/assessment.controllers.js";
 
 const router = express.Router();
 
@@ -10,6 +10,7 @@ router.route("/:assessmentId").put(isAuthenticated,addQuestionInAssessment);
 router.route("/:assessmentId/questions").get(isAuthenticated,getAddedQuestionsInAssessment);
 router.route("/:assessmentId").patch(isAuthenticated,togglePublishAssessment);
 router.route("/:assessmentId").get(isAuthenticated,getAssessmentById);
+router.route("/published/assessments").get(isAuthenticated,getAllPublishedAssessment);
 
 
 

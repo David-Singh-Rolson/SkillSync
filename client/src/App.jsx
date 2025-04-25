@@ -1,9 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
 import Login from "./pages/Login";
-import HeroSection from "./pages/student/HeroSection";
 import MainLayout from "./layout/MainLayout";
-import Courses from "./pages/student/Courses";
 import MyLearning from "./pages/student/MyLearning";
 import Profile from "./pages/student/Profile";
 import Sidebar from "./pages/admin/Sidebar";
@@ -26,11 +24,8 @@ import PurchaseCourseProtectedRoute from "./components/PurchaseCourseProtectedRo
 import { ThemeProvider } from "./components/ThemeProvider";
 import CreateTest from "./pages/admin/assesment/CreateTest";
 import CreateQuestions from "./pages/admin/assesment/CreateQuestions";
-import Assessments from "./pages/student/Assessments";
-import RecommendedCourses from "./pages/student/RecommendedCourses";
-import { useLoadUserQuery } from "./features/api/authApi";
+import AssessmentDetail from "./pages/student/AssessmentDetail";
 import HomePage from "./layout/HomePage"
-import QuestionForm from "./pages/admin/assesment/QuestionForm";
 const appRouter = createBrowserRouter([
   {
     path: "/",
@@ -77,6 +72,14 @@ const appRouter = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <CourseDetail />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "assessment-detail/:assessmentId",
+        element: (
+          <ProtectedRoute>
+            <AssessmentDetail />
           </ProtectedRoute>
         ),
       },

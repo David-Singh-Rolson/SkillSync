@@ -172,3 +172,25 @@ export const getAssessmentById=async (req,res)=>{
         })
     }
 }
+
+export const getAllPublishedAssessment = async (req, res) => {
+    try {
+      // Fetch all published tests
+      const assessments = await Test.find({ isPublished: true })
+        .populate("createdBy", "name");
+  
+      if (assessments.length === 0) {
+        return res.status(404).json({ message: "No published assessments found." });
+      }
+  
+      return res.status(200).json({
+        assessments,
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        message: "Failed to fetch published assessments!",
+      });
+    }
+  };
+  

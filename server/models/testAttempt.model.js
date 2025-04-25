@@ -58,19 +58,36 @@
 
 import mongoose from "mongoose";
 
+// const responseSchema = new mongoose.Schema({
+//   question: {
+//     type: mongoose.Schema.Types.ObjectId,
+//     ref: "Question",
+//     required: true,
+//   },
+//   selectedOptionIndex: Number,
+//   isCorrect: Boolean,
+//   topic: String,
+//   marksAwarded: {
+//     type: Number,
+//     default: 0,
+//   }
+// });
 const responseSchema = new mongoose.Schema({
   question: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Question",
     required: true,
   },
-  selectedOptionIndex: Number,
+  selectedOptionIndex: Number, // for SingleCorrect, TrueFalse, Integer
+  selectedOptionIndexes: [Number], // for MultiCorrect
+  selectedIntegerAnswer: Number, // for Integer-type exact answers (optional)
+
   isCorrect: Boolean,
   topic: String,
   marksAwarded: {
     type: Number,
     default: 0,
-  }
+  },
 });
 
 const testAttemptSchema = new mongoose.Schema({
@@ -101,7 +118,7 @@ const testAttemptSchema = new mongoose.Schema({
     enum: ["Submitted", "Incomplete"],
     default: "Submitted",
   },
-  timeTaken: Number, // in seconds
+  // timeTaken: Number, // in seconds
   topicWisePerformance: {
     type: Map,
     of: Number, // percentage score per topic

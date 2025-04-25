@@ -6,6 +6,7 @@ import { purchaseApi } from "@/features/api/purchaseApi";
 import { courseProgressApi } from "@/features/api/courseProgressApi";
 import { assessmentApi } from "@/features/api/assessmentApi";
 import { questionApi } from "@/features/api/questionApi";
+import { testAttemptApi } from "@/features/api/testAttemptApi";
 
 const rootRedcuer = combineReducers({
     [authApi.reducerPath]:authApi.reducer,
@@ -14,6 +15,7 @@ const rootRedcuer = combineReducers({
     [courseProgressApi.reducerPath]:courseProgressApi.reducer,
     [assessmentApi.reducerPath]:assessmentApi.reducer,
     [questionApi.reducerPath]:questionApi.reducer,
+    [testAttemptApi.reducerPath]:testAttemptApi.reducer,
     auth:authReducer, 
 });
 export default rootRedcuer;
