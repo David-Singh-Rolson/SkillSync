@@ -6,8 +6,8 @@ export default function ShortAnswerQuestion({ question, onChange }) {
     <div>
       <Label>Correct Answer</Label>
       <Input
-        value={question.correctOptionIndex}
-        onChange={(e) => onChange("correctOptionIndex", e.target.value)}
+        value={question.correctAnswer}
+        onChange={(e) => onChange("correctAnswer", e.target.value)}
         placeholder="Enter correct short answer"
       />
     </div>

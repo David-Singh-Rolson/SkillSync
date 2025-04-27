@@ -73,8 +73,8 @@ const {data:getQuesByAssIdData,isLoading:getQuesLoading,isSuccess:getQuesSuccess
         options: ["", ""],
         correctOptionIndex: null,
         correctOptionIndexes: [],
-        correctAnswer: null,
-        answer: "",
+        correctIntegerAnswer: null,
+        correctAnswer: "",
       });
       setShowPreview(false);
       if (isSuccess) {

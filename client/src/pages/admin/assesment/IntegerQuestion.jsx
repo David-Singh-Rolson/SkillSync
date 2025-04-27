@@ -7,8 +7,8 @@ export default function IntegerQuestion({ question, onChange }) {
       <Label>Correct Integer Answer</Label>
       <Input
         type="number"
-        value={question.correctOptionIndex}
-        onChange={(e) => onChange("correctOptionIndex", parseInt(e.target.value))}
+        value={question.correctIntegerAnswer}
+        onChange={(e) =>  onChange("correctIntegerAnswer", parseInt(e.target.value))}
         placeholder="Enter integer value"
       />
     </div>

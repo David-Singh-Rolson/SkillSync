@@ -6,15 +6,25 @@ const questionSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  options: [
+  options: [// options of the ques if available
     {
       type: String,
-      required: true,
+      // required: true,
     },
   ],
-  correctOptionIndex: {
+  correctOptionIndex: { // for single correct
     type: Number,
     // required: true,
+  },
+  correctOptionIndexes: { // for multicorrect
+    type: [Number],
+    // required: true,
+  },
+  correctIntegerAnswer:{ // for integer
+    type :Number
+  },
+  correctAnswer:{// for short answer
+    type :String
   },
   topic: {
     type: String, // e.g. "DBMS", "Maths", "OOPs"

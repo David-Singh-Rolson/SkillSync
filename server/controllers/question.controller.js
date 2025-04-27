@@ -12,8 +12,8 @@ export const createQuestion = async (req, res) => {
       options,
       correctOptionIndex,
       correctOptionIndexes,
+      correctIntegerAnswer,
       correctAnswer,
-      answer,
     } = req.body;
 
     if (
@@ -36,8 +36,8 @@ export const createQuestion = async (req, res) => {
       options,
       correctOptionIndex,
       correctOptionIndexes,
+      correctIntegerAnswer,
       correctAnswer,
-      answer,
       createdBy: req.id,
     });
 

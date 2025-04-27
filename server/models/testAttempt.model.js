@@ -78,10 +78,10 @@ const responseSchema = new mongoose.Schema({
     ref: "Question",
     required: true,
   },
-  selectedOptionIndex: Number, // for SingleCorrect, TrueFalse, Integer
+  selectedOptionIndex: Number, // for SingleCorrect, TrueFalse
   selectedOptionIndexes: [Number], // for MultiCorrect
   selectedIntegerAnswer: Number, // for Integer-type exact answers (optional)
-
+selectedCorrectAnswer:String,
   isCorrect: Boolean,
   topic: String,
   marksAwarded: {

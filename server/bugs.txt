@@ -37,3 +37,29 @@
         default:
           break;
       }
+
+
+
+
+      /////////////////////////////////////////////////TO DO///////////////////////////////////////////////////////
+      1.Ask for code modularity
+      2.Full screen access on load
+      3.Modify ques acc to our response
+      4.Handle ui for more ques
+      5.If current ques is last ques disable next button and submit button should be in the box of ques navigation area
+      6.submit res type
+
+
+
+
+
+
+
+
+
+      27-04-2025
+
+      as of now the bugs i identified is
+      1. TWo documents are being created for a test attempt
+      2. Reload of test page again goes to same page
+      3. Double loading of a same page to render
