@@ -1,23 +1,27 @@
 import { Skeleton } from '@/components/ui/skeleton'
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useGetAllPublishedAssessmentsQuery } from '@/features/api/assessmentApi'
 import AssessmentCard from './AssessmentCard'
-const Assessments = ({role}) => {
-    const {data, isLoading,isSuccess,isError}=useGetAllPublishedAssessmentsQuery()
-    // console.log(data);
+
+const Assessments = ({ role }) => {
+  const { data, isLoading, isSuccess, isError } = useGetAllPublishedAssessmentsQuery()
+  
   return (
     <div className="bg-gray-50 dark:bg-[#141414]">
       <div className="max-w-7xl mx-auto p-6">
         <h2 className="font-bold text-3xl text-center mb-10">Our Assessments</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {isError ? (
+          
+          {isLoading || isError ? (
             Array.from({ length: 8 }).map((_, index) => (
               <AssessmentSkeleton key={index} />
             ))
           ) : (
-        //    data?.courses && data.courses.map((course, index) => <Course key={index} course={course}/>) 
-        <AssessmentCard assessment={data} role={role}/>
+            data?.assessments?.map((assessment) => (
+              <AssessmentCard key={assessment._id} assessment={assessment} role={role} />
+            ))
           )}
+
         </div>
       </div>
     </div>
@@ -25,8 +29,6 @@ const Assessments = ({role}) => {
 }
 
 export default Assessments
-
-
 
 const AssessmentSkeleton = () => {
   return (
@@ -44,5 +46,5 @@ const AssessmentSkeleton = () => {
         <Skeleton className="h-4 w-1/4" />
       </div>
     </div>
-  );
-};
+  )
+}

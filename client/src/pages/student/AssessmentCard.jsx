@@ -1,169 +1,136 @@
-// import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-// import { Badge } from "@/components/ui/badge";
-// import { Button } from "@/components/ui/button";
-// import { Card, CardContent } from "@/components/ui/card";
-// import React, { useState } from "react";
-// import { useNavigate } from "react-router-dom";
-// import TestAlert from "./TestAlert";
-// const QuestionCard = ({ assessment, role }) => {
-//   if (!assessment || !assessment.assessments) {
-//     return <div>No assessments available.</div>;
-//   }
-//   const navigate = useNavigate();
 
-//   const [showAlert, setShowAlert] = useState(false);
+"use client";
 
-//   const { assessments } = assessment;
-//   console.log("role in card", role);
-
-//   return (
-//     <div className="flex flex-row gap-5 w-max">
-//       {assessments?.map((ass) => (
-//         // <Link >
-//         <Card className="overflow-hidden rounded-lg dark:bg-gray-800 bg-white shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 pt-5">
-//           <div className="relative pl-4">
-//             <h1 className="hover:underline font-bold text-lg truncate">
-//               <text>{ass.testTitle}</text>
-//             </h1>
-//             <h1 className="font-medium text-sm">
-//               Course : {ass.course || "N/A"}
-//             </h1>
-//             <h1 className="font-medium text-sm">
-//               Test Type : {ass.testType || "N/A"}
-//             </h1>
-//           </div>
-//           <CardContent className="px-5 py-4 space-y-3">
-//             <div className="flex items-center justify-around gap-3">
-//               <div className="flex items-center gap-3 flex-row">
-//                 <text>Created By</text>
-//                 <h1 className="font-medium text-sm">{ass?.createdBy?.name}</h1>
-//               </div>
-//             </div>
-//             <div>
-//               <h4>Start Time</h4>
-//               <h4>{ass.startTime}</h4>
-//             </div>
-//             <div>
-//               <h4>End Time</h4>
-//               <h4>{ass.endTime}</h4>
-//             </div>
-//             <div className="text-lg font-bold flex flex-row gap-3 justify-around">
-//               <Badge
-//                 className={`text-white px-2 py-1 text-xs rounded-full ${
-//                   ass.testLevel === "Beginner"
-//                     ? "bg-green-500"
-//                     : ass.testLevel === "Medium"
-//                     ? "bg-yellow-500"
-//                     : "bg-red-600"
-//                 }`}
-//               >
-//                 {ass.testLevel}
-//               </Badge>
-//               <TestAlert
-//                 onContinue={() => navigate(`/assessment-detail/${ass._id}`)}
-//               >
-//                 <Button
-//                   disabled={role === "instructor"}
-//                   className="bg-green-400 hover:bg-green-600"
-//                 >
-//                   Attempt
-//                 </Button>
-//               </TestAlert>
-//             </div>
-//           </CardContent>
-//         </Card>
-//       ))}
-//     </div>
-//   );
-// };
-
-// export default QuestionCard;
-
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import React, { useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
+import {
+  CalendarDays,
+  Clock,
+  GraduationCap,
+  BookOpen,
+  User,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import TestAlert from "./TestAlert";
 
 const AssessmentCard = ({ assessment, role }) => {
-  if (!assessment || !assessment.assessments) {
-    return <div>No assessments available.</div>;
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Just a placeholder. No need for navigate here.
+  }, []);
+
+  if (!assessment) {
+    return (
+      <div className="text-center text-muted-foreground py-8">
+        No assessment data available.
+      </div>
+    );
   }
 
-  const navigate = useNavigate();
-  const { assessments } = assessment;
+  const now = new Date();
+  const start = new Date(assessment.startTime);
+  const end = new Date(assessment.endTime);
+  const isTestActive = now >= start && now <= end;
+
+  const getLevelBadgeColor = (level) => {
+    switch (level) {
+      case "Beginner":
+        return "bg-emerald-500 hover:bg-emerald-600";
+      case "Medium":
+        return "bg-amber-500 hover:bg-amber-600";
+      default:
+        return "bg-rose-600 hover:bg-rose-700";
+    }
+  };
+
+  const badgeColor = getLevelBadgeColor(assessment.testLevel);
 
   return (
-    <div className="flex flex-row gap-5 w-max flex-wrap">
-      {assessments?.map((ass) => {
-        const now = new Date();
-        const start = new Date(ass.startTime);
-        const end = new Date(ass.endTime);
-        const isTestActive = now >= start && now <= end;
+    <Card
+      key={assessment._id}
+      className="overflow-hidden rounded-xl border border-border/40 shadow-md  hover:shadow-2xl transform hover:scale-105 transition-all duration-300 w-full"
+    >
+      <CardHeader className="pb-2 space-y-1">
+        <div className="flex justify-between items-start">
+          <h2 className="font-bold text-xl line-clamp-1 hover:underline cursor-pointer">
+            {assessment.testTitle}
+          </h2>
+          <Badge className={`${badgeColor} text-white font-medium`}>
+            {assessment.testLevel}
+          </Badge>
+        </div>
 
-        return (
-          <Card key={ass._id} className="overflow-hidden rounded-lg dark:bg-gray-800 bg-white shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 pt-5 w-80">
-            <div className="relative pl-4">
-              <h1 className="hover:underline font-bold text-lg truncate">
-                {ass.testTitle}
-              </h1>
-              <h1 className="font-medium text-sm">Course: {ass.course || "N/A"}</h1>
-              <h1 className="font-medium text-sm">Test Type: {ass.testType || "N/A"}</h1>
+        <div className="flex flex-col space-y-1 text-sm text-muted-foreground">
+          <div className="flex items-center gap-1.5">
+            <BookOpen className="h-3.5 w-3.5" />
+            <span>Course: {assessment.course || "N/A"}</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <GraduationCap className="h-3.5 w-3.5" />
+            <span>Type: {assessment.testType || "N/A"}</span>
+          </div>
+        </div>
+      </CardHeader>
+
+      <CardContent className="pb-3 pt-0">
+        <div className="space-y-4">
+          <div className="flex items-center gap-2 text-sm">
+            <User className="h-4 w-4 text-muted-foreground" />
+            <span className="text-muted-foreground">Created by:</span>
+            <span className="font-medium">
+              {assessment?.createdBy?.name || "Unknown"}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 bg-muted/50 p-3 rounded-lg">
+            <div className="space-y-1">
+              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <CalendarDays className="h-3.5 w-3.5" />
+                <span>Start Time</span>
+              </div>
+              <p className="text-xs font-medium">{start.toLocaleString()}</p>
             </div>
 
-            <CardContent className="px-5 py-4 space-y-3">
-              <div className="flex items-center justify-around gap-3">
-                <div className="flex items-center gap-3 flex-row">
-                  <span>Created By</span>
-                  <h1 className="font-medium text-sm">{ass?.createdBy?.name}</h1>
-                </div>
+            <div className="space-y-1">
+              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <Clock className="h-3.5 w-3.5" />
+                <span>End Time</span>
               </div>
+              <p className="text-xs font-medium">{end.toLocaleString()}</p>
+            </div>
+          </div>
+        </div>
+      </CardContent>
 
-              <div>
-                <h4>Start Time</h4>
-                <h4>{new Date(ass.startTime).toLocaleString()}</h4>
-              </div>
-              <div>
-                <h4>End Time</h4>
-                <h4>{new Date(ass.endTime).toLocaleString()}</h4>
-              </div>
-
-              <div className="text-lg font-bold flex flex-row gap-3 justify-around">
-                <Badge
-                  className={`text-white px-2 py-1 text-xs rounded-full ${
-                    ass.testLevel === "Beginner"
-                      ? "bg-green-500"
-                      : ass.testLevel === "Medium"
-                      ? "bg-yellow-500"
-                      : "bg-red-600"
-                  }`}
-                >
-                  {ass.testLevel}
-                </Badge>
-
-                <TestAlert
-                  onContinue={() => navigate(`/assessment-detail/${ass._id}`)}
-                  startTime={ass.startTime}
-                  endTime={ass.endTime}
-                  disabled={!isTestActive}
-                >
-                  <Button
-                    disabled={role === "instructor"}
-                    className="bg-green-400 hover:bg-green-600"
-                  >
-                    Attempt
-                  </Button>
-                </TestAlert>
-              </div>
-            </CardContent>
-          </Card>
-        );
-      })}
-    </div>
+      <CardFooter className="pt-0">
+        <TestAlert
+          onContinue={() => navigate(`/assessment-detail/${assessment._id}`)}
+          startTime={assessment.startTime}
+          endTime={assessment.endTime}
+          disabled={!isTestActive}
+        >
+          <Button
+            disabled={role === "instructor"}
+            className={`w-full ${
+              isTestActive
+                ? "bg-green-500 hover:bg-green-600"
+                : "bg-green-400 hover:bg-green-500"
+            }`}
+          >
+            {isTestActive ? "Attempt Now" : "Attempt"}
+          </Button>
+        </TestAlert>
+      </CardFooter>
+    </Card>
   );
 };
 
 export default AssessmentCard;
-
