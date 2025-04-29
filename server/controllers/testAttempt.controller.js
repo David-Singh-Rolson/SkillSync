@@ -2,6 +2,9 @@ import { Test } from "../models/test.model.js";
 import { TestAttempt } from "../models/testAttempt.model.js";
 import { Question } from "../models/question.model.js"; // Assuming you have this model
 import { evaluateAnswer } from "../utils/evaluteAnswer.js";
+import axios from "axios"
+import { getAvailableTopics } from "../utils/topics.js";
+import { getMLRecommendedCourse } from "../utils/mlService.js";
 export const getQuestionForAttempt = async (req, res) => {
   try {
     const { assessmentId, userId } = req.body;
@@ -102,7 +105,7 @@ export const submitTestAttempt = async (req, res) => {
     Hard: 3,
   };
   try {
-    const { attemptId, responses } = req.body;
+    const { attemptId, responses,testType } = req.body;
 
     if (!attemptId || !responses || typeof responses !== "object") {
       return res.status(400).json({ message: "Invalid request data" });
@@ -133,6 +136,7 @@ let topicWiseMarks = {};
         isCorrect: false, // calculate below
         topic: question.topic,
         marksAwarded: 0,
+        testType:testType
       };
       totalDifficulty+=difficultyMap[question.difficulty]
       if (data.questionType === "SingleCorrect") {
@@ -202,7 +206,7 @@ let topicWiseMarks = {};
     structuredResponses.forEach((response) => {
       totalScore+=response.marksAwarded
     });
-    console.log("responsessss", structuredResponses.length);
+    console.log("responsessss", structuredResponses);
     console.log("responsessss2", totalDifficulty);
 
     let avgQuestionDiffi = structuredResponses.length > 0 ? totalDifficulty / structuredResponses.length : 0; 
@@ -233,11 +237,52 @@ if (previousAttempts.length > 0) {
     attempt.topicWisePerformance = topicPerformance;
     attempt.avgPreviousPerformance = avgPreviousPerformance; 
 
+     // 2. Load dynamic topics
+    const topics = getAvailableTopics();
+
+    // 3. Create feature object dynamically
+    const features = {};
+
+    topics.forEach(topic => {
+      features[topic] = attempt.topicWisePerformance.get(topic) || 0;
+    });
+
+    features.testType = structuredResponses[0].testType;// what is this testtype used for
+    features.avgPreviousPerformance = attempt.avgPreviousPerformance || 0;
+    features.avgQuestionDifficulty = attempt.avgQuestionDifficulty || 2;
+
+    console.log("ML Features to Send:", features);
+
+     // 4. Call ML API to get recommended course
+     const recommendedCourseId = await getMLRecommendedCourse(features);
+
+     if (recommendedCourseId) {
+       attempt.labelCourseId = recommendedCourseId;
+     }
+
     await attempt.save();
+
+    // ML Integration
+// let recommendedTopics = [];
+// try {
+//   const mlInput = {
+//     topicWisePerformance: topicPerformance,
+//     avgQuestionDifficulty: avgQuestionDiffi,
+//     avgPreviousPerformance: avgPreviousPerformance ?? 0,
+//   };
+
+//   const mlResponse = await axios.post('http://localhost:5000/predict', mlInput);
+//   recommendedTopics = mlResponse.data.recommendedTopics;
+// } catch (err) {
+//   console.error("Error calling ML server:", err.message);
+//   recommendedTopics = [];
+// }
 
     return res.status(200).json({
       message: "Test submitted successfully",
-      attempt
+      attempt,
+      recommendedCourseId: recommendedCourseId
+      // recommendedTopics
     });
   } catch (error) {
     console.error("submitTestAttempt error:", error.message, error.stack);

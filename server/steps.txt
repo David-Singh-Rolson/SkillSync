@@ -61,3 +61,16 @@ POST /api/v1/test/attempt/
 Let me know if you’d like me to help you structure the submit test controller next!
 
 
+
+
+
+
+
+
+
+
+
+
+now what i need to doing
+--- get all available courses and their ideas
+--- popuate the list of courses  

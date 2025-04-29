@@ -29,6 +29,7 @@ export default function Quiz({ quizData }) {
     return <Loader2 />;
   }
   const attemptId = quizData?.attemptId;
+  const testType="Topic"
 
   const questions = quizData?.questions;
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -198,7 +199,7 @@ export default function Quiz({ quizData }) {
   const handleSubmitQuiz = () => {
     setShowResults(true);
     setIsTimerRunning(false);
-    submitTestAttempt({ attemptId, responses: answers });
+    submitTestAttempt({ attemptId, responses: answers,testType });
     console.log("Submitting answers:", answers);
   };
 

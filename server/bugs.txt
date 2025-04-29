@@ -63,3 +63,16 @@
       1. TWo documents are being created for a test attempt
       2. Reload of test page again goes to same page
       3. Double loading of a same page to render
+
+
+
+
+
+
+
+
+
+      -----------------------------ML BUGS----------------------29/04/2025----------------
+      1. How do i know that this is for a particular user or it is generic
+      2. For now it only gave one why not Multiple
+      3. Is it valid for mixed and how course will be tagged in mixed test and if single recommendation is done now then how will it recommend in mixed test

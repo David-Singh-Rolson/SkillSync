@@ -2,31 +2,43 @@ import { Test } from "../models/test.model.js";
 
 export const CreateAssessment=async (req, res) =>{
     try {
-        // console.log(req.body)
-        const {testTitle,testDescription,instructions,category,testType,timeLimit,totalMarks,testLevel, startTime,
+        console.log(req.body)
+        const {testTitle,testDescription,instructions,course,testType,timeLimit,totalMarks,testLevel, startTime,
             endTime,isScheduled,}=req.body;
-        if(!testTitle || !testType || !timeLimit || !testLevel ||  !testDescription || !instructions || !category || !totalMarks ||  !startTime ||
-            !endTime || !isScheduled){
+        if(!testTitle || !testType || !timeLimit || !testLevel ||  !testDescription || !instructions || !course || !totalMarks  || isScheduled){
                 return res.status(400).json({
                     message:"All fields are required!"
                 })
         }
 
 
-        const test=await Test.create({
-            testTitle,
-            testDescription,
-            instructions,
-            category,
-            testLevel,
-            testType,
-            timeLimit,
-            totalMarks,
-            startTime,
-            endTime,
-            isScheduled,
-            createdBy: req.id
-        });
+        // Prepare testData object
+    const testData = {
+        testTitle,
+        testDescription,
+        instructions,
+        course, // corrected category name
+        testLevel,
+        testType,
+        timeLimit,
+        totalMarks,
+        isScheduled,
+        createdBy: req.id,
+      };
+
+      
+    // Only if scheduled, include startTime and endTime
+    if (isScheduled) {
+        if (!startTime || !endTime) {
+          return res.status(400).json({
+            message: "Start Time and End Time are required for scheduled assessments!",
+          });
+        }
+        testData.startTime = startTime;
+        testData.endTime = endTime;
+      }
+
+        const test=await Test.create(testData);
         return res.status(201).json({test,message:"Assessment Created"})
     } catch (error) {
         console.log(error);

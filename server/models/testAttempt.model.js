@@ -81,7 +81,7 @@ const responseSchema = new mongoose.Schema({
   selectedOptionIndex: Number, // for SingleCorrect, TrueFalse
   selectedOptionIndexes: [Number], // for MultiCorrect
   selectedIntegerAnswer: Number, // for Integer-type exact answers (optional)
-selectedCorrectAnswer:String,
+  selectedCorrectAnswer:String,
   isCorrect: Boolean,
   topic: String,
   marksAwarded: {
@@ -136,6 +136,11 @@ const testAttemptSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Course",
     default: null, // Only used for ML training
+  },
+  testType:{
+    type: String,
+    enum: ["Topic", "Mixed"],
+    default: "Topic",
   },
   remarks: {
     type: String,

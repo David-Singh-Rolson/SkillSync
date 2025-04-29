@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import React from "react";
 
-const TestAlert = ({onContinue,startTime,endTime,disabled,children}) => {
+const TestAlert = ({onContinue,startTime,endTime,disabled,testType,children}) => {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>

@@ -18,10 +18,10 @@ export const testAttemptApi=createApi({
             }),
         }),
         submitTestAttempt:builder.mutation({
-            query:({ attemptId, responses })=>({
+            query:({ attemptId, responses,testType })=>({
                 url:`/submit/${attemptId}`,
                 method:"POST",
-                body:{attemptId,responses}
+                body:{attemptId,responses,testType}
             })
         })
     }),

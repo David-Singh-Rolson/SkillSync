@@ -115,6 +115,7 @@ const AssessmentCard = ({ assessment, role }) => {
           onContinue={() => navigate(`/assessment-detail/${assessment._id}`)}
           startTime={assessment.startTime}
           endTime={assessment.endTime}
+          testType={assessment.testType}
           disabled={!isTestActive}
         >
           <Button

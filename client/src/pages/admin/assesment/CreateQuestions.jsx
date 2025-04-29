@@ -23,10 +23,10 @@ export default function CreateQuestions() {
     marks: 0,
     questionType: "",
     options: ["", ""],
-    correctOptionIndex: null,
-    correctOptionIndexes: [],
-    correctAnswer: null,
-    answer: "",
+    correctOptionIndex: null,// for single correct
+    correctOptionIndexes: [],// for multicorrect
+    correctAnswer: null,// for integer
+    answer: "",// for short or one word
   });
   const [showPreview, setShowPreview] = useState(false);
   const [questionList, setQuestionList] = useState([]);
