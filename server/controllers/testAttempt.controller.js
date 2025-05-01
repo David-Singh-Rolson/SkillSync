@@ -1,8 +1,6 @@
 import { Test } from "../models/test.model.js";
 import { TestAttempt } from "../models/testAttempt.model.js";
 import { Question } from "../models/question.model.js"; // Assuming you have this model
-import { evaluateAnswer } from "../utils/evaluteAnswer.js";
-import axios from "axios"
 import { getAvailableTopics } from "../utils/topics.js";
 import { getMLRecommendedCourse } from "../utils/mlService.js";
 export const getQuestionForAttempt = async (req, res) => {

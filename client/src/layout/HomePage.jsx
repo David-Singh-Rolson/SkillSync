@@ -6,10 +6,11 @@ import Assessments from "../pages/student/Assessments";
 import Courses from "../pages/student/Courses";
 import { useLoadUserQuery } from "../features/api/authApi";
 import { Loader2 } from "lucide-react";
+import { useGetUserRecommendationsQuery } from "@/features/api/recommendationApi";
 
 const HomePage = () => {
   const { data, isLoading,refetch } = useLoadUserQuery();
-// console.log(data.user.role);
+
 
 useEffect(() => {
   refetch();

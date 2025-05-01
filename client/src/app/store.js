@@ -7,6 +7,7 @@ import { courseProgressApi } from "@/features/api/courseProgressApi";
 import { assessmentApi } from "@/features/api/assessmentApi";
 import { questionApi } from "@/features/api/questionApi";
 import { testAttemptApi } from "@/features/api/testAttemptApi";
+import { recommendationApi } from "@/features/api/recommendationApi";
 
 export const appStore = configureStore({
   reducer: rootRedcuer,
@@ -18,7 +19,8 @@ export const appStore = configureStore({
       courseProgressApi.middleware,
       assessmentApi.middleware,
       questionApi.middleware,
-      testAttemptApi.middleware
+      testAttemptApi.middleware,
+      recommendationApi.middleware
     ),
 });
 

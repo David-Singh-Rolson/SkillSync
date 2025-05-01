@@ -1,8 +1,11 @@
 import { Skeleton } from '@/components/ui/skeleton';
 import React from 'react'
 import Course from './Course';
+import { useGetUserRecommendationsQuery } from '@/features/api/recommendationApi';
 
 const RecommendedCourses = () => {
+    const {data:recommendedData,isLoading:recommendedDataLoading}=useGetUserRecommendationsQuery()
+  console.log("aidata",recommendedData);
     const isLoading=true;
   return (
     <div className="bg-gray-50 dark:bg-[#141414]">
@@ -24,6 +27,8 @@ const RecommendedCourses = () => {
 
 export default RecommendedCourses
 
+
+// {isLoading ? ( Array.from({ length: 8 }).map((_, index) => ( <CourseSkeleton key={index} /> )) ) : ( recommendedData?.recommendedCourses?.map((course, index) => ( <Course key={index} course={course} /> )) )}
 
 
 const CourseSkeleton = () => {
