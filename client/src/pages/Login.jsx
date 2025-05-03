@@ -10,6 +10,13 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  Select
+} from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   useLoginUserMutation,
@@ -64,17 +71,17 @@ const Login = () => {
   };
 
   useEffect(() => {
-    if(registerIsSuccess && registerData){
-      toast.success(registerData.message || "Signup successful.")
+    if (registerIsSuccess && registerData) {
+      toast.success(registerData.message || "Signup successful.");
     }
-    if(registerError){
+    if (registerError) {
       toast.error(registerError.data.message || "Signup Failed");
     }
-    if(loginIsSuccess && loginData){
+    if (loginIsSuccess && loginData) {
       toast.success(loginData.message || "Login successful.");
       navigate("/");
     }
-    if(loginError){ 
+    if (loginError) {
       toast.error(loginError.data.message || "login Failed");
     }
   }, [
@@ -113,6 +120,28 @@ const Login = () => {
                   required="true"
                 />
               </div>
+              <div className="space-y-1">
+                <Label htmlFor="role">Role</Label>
+                <Select
+                  name="role"
+                  value={signupInput.role}
+                  onValueChange={(value) =>
+                    changeInputHandler(
+                      { target: { name: "role", value } },
+                      "signup"
+                    )
+                  }
+                >
+                  <SelectTrigger id="role">
+                    <SelectValue placeholder="Eg." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="student">Student</SelectItem>
+                    <SelectItem value="instructor">Instructor</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
               <div className="space-y-1">
                 <Label htmlFor="username">Email</Label>
                 <Input
