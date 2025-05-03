@@ -68,6 +68,7 @@ const Login = () => {
     const inputData = type === "signup" ? signupInput : loginInput;
     const action = type === "signup" ? registerUser : loginUser;
     await action(inputData);
+
   };
 
   useEffect(() => {
@@ -132,8 +133,8 @@ const Login = () => {
                     )
                   }
                 >
-                  <SelectTrigger id="role">
-                    <SelectValue placeholder="Eg." />
+                  <SelectTrigger id="role" >
+                    <SelectValue  placeholder="Select your role"/>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="student">Student</SelectItem>
