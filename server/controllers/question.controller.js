@@ -2,7 +2,7 @@ import { Question } from "../models/question.model.js";
 
 export const createQuestion = async (req, res) => {
   try {
-    console.log(req.body);
+    console.log("ai gen ques in contr",req.body);
     const {
       questionText,
       topic,

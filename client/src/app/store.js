@@ -8,7 +8,7 @@ import { assessmentApi } from "@/features/api/assessmentApi";
 import { questionApi } from "@/features/api/questionApi";
 import { testAttemptApi } from "@/features/api/testAttemptApi";
 import { recommendationApi } from "@/features/api/recommendationApi";
-
+import { mcqApi } from "@/features/api/mcqBuilderApi";
 export const appStore = configureStore({
   reducer: rootRedcuer,
   middleware: (defaultMiddleware) =>
@@ -20,7 +20,8 @@ export const appStore = configureStore({
       assessmentApi.middleware,
       questionApi.middleware,
       testAttemptApi.middleware,
-      recommendationApi.middleware
+      recommendationApi.middleware,
+      mcqApi.middleware
     ),
 });
 

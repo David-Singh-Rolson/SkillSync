@@ -12,7 +12,7 @@ export default function TrueFalseQuestion({ question, onChange }) {
         onChange={(e) => onChange("correctOptionIndex", parseInt(e.target.value))}
       >
         <option value="" disabled>Select correct answer</option>
-        <option value={0}>True</option>
+        <option selected value={0}>True</option>
         <option value={1}>False</option>
       </select>
     </div>
