@@ -12,6 +12,9 @@ import {
 import React from "react";
 
 const TestAlert = ({onContinue,startTime,endTime,disabled,testType,children}) => {
+  function isValidDate(d) {
+    return d && !isNaN(new Date(d));
+  }
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
@@ -21,17 +24,18 @@ const TestAlert = ({onContinue,startTime,endTime,disabled,testType,children}) =>
           <AlertDialogDescription>
             This test is available between:
             <br />
-            <b>Start:</b> {new Date(startTime).toLocaleString()}
+            <b>Start:</b> { isValidDate(startTime)? new Date(startTime).toLocaleString():"N/A"}
             <br />
-            <b>End:</b> {new Date(endTime).toLocaleString()}
-            {!disabled ? (
-              <p className="text-green-600 mt-2">You can start now!</p>
-            ) : (
-              <p className="text-red-600 mt-2">
-                Test is not currently available.
-              </p>
-            )}
+            <b>End:</b> {isValidDate(endTime)?new Date(endTime).toLocaleString():"N/A"}
+            
           </AlertDialogDescription>
+          {!disabled ? (
+              <div className="text-green-600 mt-2">You can start now!</div>
+            ) : (
+              <div className="text-red-600 mt-2">
+                Test is not currently available.
+              </div>
+            )}
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>

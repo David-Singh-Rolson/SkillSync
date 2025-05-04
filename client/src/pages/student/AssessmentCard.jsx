@@ -22,6 +22,8 @@ import TestAlert from "./TestAlert";
 
 const AssessmentCard = ({ assessment, role }) => {
   const navigate = useNavigate();
+  console.log("newsss",assessment);
+  
 
   useEffect(() => {
     // Just a placeholder. No need for navigate here.
@@ -36,9 +38,14 @@ const AssessmentCard = ({ assessment, role }) => {
   }
 
   const now = new Date();
-  const start = new Date(assessment.startTime);
-  const end = new Date(assessment.endTime);
-  const isTestActive = now >= start && now <= end;
+  const start=null,end=null,isTestActive=true;
+  if(assessment?.startTime && assessment?.endTime){
+     start = new Date(assessment?.startTime);
+     end = new Date(assessment?.endTime);
+     isTestActive = now >= start && now <= end;
+  }
+
+
 
   const getLevelBadgeColor = (level) => {
     switch (level) {
@@ -71,7 +78,7 @@ const AssessmentCard = ({ assessment, role }) => {
         <div className="flex flex-col space-y-1 text-sm text-muted-foreground">
           <div className="flex items-center gap-1.5">
             <BookOpen className="h-3.5 w-3.5" />
-            <span>Course: {assessment.course || "N/A"}</span>
+            <span>Course: {assessment.course.courseTitle || "N/A"}</span>
           </div>
           <div className="flex items-center gap-1.5">
             <GraduationCap className="h-3.5 w-3.5" />
@@ -96,7 +103,7 @@ const AssessmentCard = ({ assessment, role }) => {
                 <CalendarDays className="h-3.5 w-3.5" />
                 <span>Start Time</span>
               </div>
-              <p className="text-xs font-medium">{start.toLocaleString()}</p>
+              <p className="text-xs font-medium">{start?.toLocaleString() || "N/A"}</p>
             </div>
 
             <div className="space-y-1">
@@ -104,7 +111,7 @@ const AssessmentCard = ({ assessment, role }) => {
                 <Clock className="h-3.5 w-3.5" />
                 <span>End Time</span>
               </div>
-              <p className="text-xs font-medium">{end.toLocaleString()}</p>
+              <p className="text-xs font-medium">{end?.toLocaleString() || "N/A"}</p>
             </div>
           </div>
         </div>
@@ -113,9 +120,9 @@ const AssessmentCard = ({ assessment, role }) => {
       <CardFooter className="pt-0">
         <TestAlert
           onContinue={() => navigate(`/assessment-detail/${assessment._id}`)}
-          startTime={assessment.startTime}
-          endTime={assessment.endTime}
-          testType={assessment.testType}
+          startTime={assessment?.startTime || "N/A"}
+          endTime={assessment?.endTime || "N/A"}
+          testType={assessment?.testType}
           disabled={!isTestActive}
         >
           <Button
