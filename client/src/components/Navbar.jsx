@@ -82,9 +82,11 @@ const Navbar = () => {
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
+                {user?.role === "student" && (
                   <DropdownMenuItem onSelect={() => navigateAndClose("/my-learning")}>
                     My learning
                   </DropdownMenuItem>
+                )}
                   <DropdownMenuItem onSelect={() => navigateAndClose("/profile")}>
                     Edit Profile
                   </DropdownMenuItem>

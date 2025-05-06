@@ -1,6 +1,7 @@
 
 
 import mongoose from "mongoose";
+import { type } from "os";
 
 const testSchema = new mongoose.Schema({
   testTitle: {
@@ -18,6 +19,10 @@ const testSchema = new mongoose.Schema({
     enum: ["Mixed", "Topic"],
     default: "Topic",
     required:true
+  },
+  isSingleAttempt:{
+    type:Boolean,
+    default:false
   },
   testLevel: {
     type: String,

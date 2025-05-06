@@ -1,4 +1,3 @@
-
 "use client";
 
 import { Badge } from "@/components/ui/badge";
@@ -15,19 +14,14 @@ import {
   GraduationCap,
   BookOpen,
   User,
+  CheckCheck,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 import TestAlert from "./TestAlert";
 
 const AssessmentCard = ({ assessment, role }) => {
   const navigate = useNavigate();
-  console.log("newsss",assessment);
-  
-
-  useEffect(() => {
-    // Just a placeholder. No need for navigate here.
-  }, []);
+  console.log("newsss", assessment);
 
   if (!assessment) {
     return (
@@ -38,14 +32,14 @@ const AssessmentCard = ({ assessment, role }) => {
   }
 
   const now = new Date();
-  const start=null,end=null,isTestActive=true;
-  if(assessment?.startTime && assessment?.endTime){
-     start = new Date(assessment?.startTime);
-     end = new Date(assessment?.endTime);
-     isTestActive = now >= start && now <= end;
+  const start = null,
+    end = null,
+    isTestActive = true;
+  if (assessment?.startTime && assessment?.endTime) {
+    start = new Date(assessment?.startTime);
+    end = new Date(assessment?.endTime);
+    isTestActive = now >= start && now <= end;
   }
-
-
 
   const getLevelBadgeColor = (level) => {
     switch (level) {
@@ -84,6 +78,17 @@ const AssessmentCard = ({ assessment, role }) => {
             <GraduationCap className="h-3.5 w-3.5" />
             <span>Type: {assessment.testType || "N/A"}</span>
           </div>
+          <div className="flex items-center gap-1.5">
+            <CheckCheck className="h-3.5 w-3.5" />
+            <span>
+              Attempts:{" "}
+              {(assessment?.isSingleAttempt) === true
+                ? "Single"
+                : assessment?.isSingleAttempt === false
+                ? "Multiple"
+                : "N/A"}
+            </span>
+          </div>
         </div>
       </CardHeader>
 
@@ -103,7 +108,9 @@ const AssessmentCard = ({ assessment, role }) => {
                 <CalendarDays className="h-3.5 w-3.5" />
                 <span>Start Time</span>
               </div>
-              <p className="text-xs font-medium">{start?.toLocaleString() || "N/A"}</p>
+              <p className="text-xs font-medium">
+                {start?.toLocaleString() || "N/A"}
+              </p>
             </div>
 
             <div className="space-y-1">
@@ -111,7 +118,9 @@ const AssessmentCard = ({ assessment, role }) => {
                 <Clock className="h-3.5 w-3.5" />
                 <span>End Time</span>
               </div>
-              <p className="text-xs font-medium">{end?.toLocaleString() || "N/A"}</p>
+              <p className="text-xs font-medium">
+                {end?.toLocaleString() || "N/A"}
+              </p>
             </div>
           </div>
         </div>
@@ -119,10 +128,13 @@ const AssessmentCard = ({ assessment, role }) => {
 
       <CardFooter className="pt-0">
         <TestAlert
-          onContinue={() => navigate(`/assessment-detail/${assessment._id}`)}
+          onContinue={() =>
+            navigate(
+              `/assessment-detail/${assessment._id}?type=${assessment.testType}&level=${assessment.testLevel}`
+            )
+          }
           startTime={assessment?.startTime || "N/A"}
           endTime={assessment?.endTime || "N/A"}
-          testType={assessment?.testType}
           disabled={!isTestActive}
         >
           <Button

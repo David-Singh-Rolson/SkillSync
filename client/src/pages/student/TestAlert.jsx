@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import React from "react";
 
-const TestAlert = ({onContinue,startTime,endTime,disabled,testType,children}) => {
+const TestAlert = ({onContinue,startTime,endTime,disabled,children}) => {
   function isValidDate(d) {
     return d && !isNaN(new Date(d));
   }

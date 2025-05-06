@@ -132,6 +132,7 @@ export default function QuestionList({ questions, setQuestions }) {
 
       <div className="space-x-2">
         <Button
+        disabled={questions?.length==0}
           variant="outline"
           onClick={() =>
             publishStatusHandler(
@@ -141,7 +142,7 @@ export default function QuestionList({ questions, setQuestions }) {
         >
           {data?.assessment?.isPublished ? "Unpublished" : "Publish"}
         </Button>
-        <Button>Remove Assessment</Button>
+        <Button  >Remove Assessment</Button>
       </div>
     </div>
   );

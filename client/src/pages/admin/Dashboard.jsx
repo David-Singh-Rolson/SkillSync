@@ -49,13 +49,13 @@ const Dashboard = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <ResponsiveContainer width="100%" height={250}>
+          <ResponsiveContainer width="100%" height={250} >
             <LineChart data={courseData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
               <XAxis
                 dataKey="name"
                 stroke="#6b7280"
-                angle={-30} // Rotated labels for better visibility
+                angle={0} // Rotated labels for better visibility
                 textAnchor="end"
                 interval={0} // Display all labels
               />

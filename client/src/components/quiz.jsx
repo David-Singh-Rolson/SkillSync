@@ -23,13 +23,14 @@ import { useFullscreen } from "../hooks/use-fullscreen";
 import { useSubmitTestAttemptMutation } from "@/features/api/testAttemptApi";
 // import { questions } from "../../data/questions"
 
-export default function Quiz({ quizData }) {
+export default function Quiz({ quizData , testType,testLevel }) {
   console.log("quiz", quizData);
   if (!quizData || quizData.length === 0) {
     return <Loader2 />;
   }
   const attemptId = quizData?.attemptId;
-  const testType="Topic"
+
+ 
 
   const questions = quizData?.questions;
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -199,7 +200,7 @@ export default function Quiz({ quizData }) {
   const handleSubmitQuiz = () => {
     setShowResults(true);
     setIsTimerRunning(false);
-    submitTestAttempt({ attemptId, responses: answers,testType });
+    submitTestAttempt({ attemptId, responses: answers,testType ,testLevel});
     console.log("Submitting answers:", answers);
   };
 

@@ -1,7 +1,7 @@
 import { DatePicker } from "@/components/DatePicker";
 import RichTextEditor from "@/components/RichTextEditor";
 import { Button } from "@/components/ui/button";
-import { useSelector } from "react-redux";
+import { Switch } from "@/components/ui/switch";
 import {
   Card,
   CardContent,
@@ -23,25 +23,25 @@ import {
 } from "@/components/ui/select";
 import { useCreateAssessmentMutation } from "@/features/api/assessmentApi";
 import { Loader2 } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { useGetPublishedCourseQuery } from "@/features/api/courseApi";
 
 const CreateTest = () => {
   // const courseList = useSelector((state) => state.auth.user?.role); course slice bnna pdega
+
   const {
     data: publishedCourseData,
     isLoading: publishedCourseIsLoading,
     isError,
   } = useGetPublishedCourseQuery();
 
-
   const [input, setInput] = useState({
     testTitle: "",
     testDescription: "",
     instructions: "",
-    // category: "",
+    isSingleAttempt: false,
     testLevel: "",
     testType: "",
     timeLimit: "",
@@ -51,8 +51,6 @@ const CreateTest = () => {
     endTime: "",
     isScheduled: "",
   });
-
-
 
   const params = useParams();
   const testId = params.testId;
@@ -81,7 +79,7 @@ const CreateTest = () => {
   };
 
   const CreateAssessmentHandler = async () => {
-console.log("input",input);
+    console.log("input", input);
 
     try {
       const res = await createAssessment({ ...input }).unwrap(); // unwrap to get actual response
@@ -139,32 +137,30 @@ console.log("input",input);
               />
             </div>
             <div className="flex items-center gap-5 flex-wrap">
-               
-                <div>
-                  <Label>Course</Label>
-                  <Select
-                    value={input.course}
-                    onValueChange={(value) =>
-                      setInput({ ...input, course: value })
-                    }
-                  >
-                    <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder="Select a Course" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectLabel>Courses</SelectLabel>
-                        {publishedCourseData?.courses?.map((course) => (
-                          <SelectItem key={course._id} value={course._id}>
-                            {course.courseTitle}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-
+              <div>
+                <Label>Course</Label>
+                <Select
+                  value={input.course}
+                  onValueChange={(value) =>
+                    setInput({ ...input, course: value })
+                  }
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Select a Course" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Courses</SelectLabel>
+                      {publishedCourseData?.courses?.map((course) => (
+                        <SelectItem key={course._id} value={course._id}>
+                          {course.courseTitle}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
                 <Label>Test Level</Label>
                 <Select
                   defaultValue={input.courseLevel}
@@ -271,6 +267,16 @@ console.log("input",input);
                   </p>
                 )}
               </div>
+            </div>
+            <div className="flex gap-2">
+              <Label htmlFor="attemptFreq">Single Attempt ?</Label>
+              <Switch
+                checked={input.isSingleAttempt}
+                onCheckedChange={(checked) =>
+                  setInput((prev) => ({ ...prev, isSingleAttempt: checked }))
+                }
+                id="attemptFreq"
+              />
             </div>
             <div>
               <Button

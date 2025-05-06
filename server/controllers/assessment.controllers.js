@@ -4,8 +4,8 @@ export const CreateAssessment=async (req, res) =>{
     try {
         console.log(req.body)
         const {testTitle,testDescription,instructions,course,testType,timeLimit,totalMarks,testLevel, startTime,
-            endTime,isScheduled,}=req.body;
-        if(!testTitle || !testType || !timeLimit || !testLevel ||  !testDescription || !instructions || !course || !totalMarks  || isScheduled){
+            endTime,isScheduled,isSingleAttempt}=req.body;
+        if(!testTitle || !testType || !timeLimit || !testLevel ||  !testDescription || !instructions || !course || !totalMarks  || isScheduled ){
                 return res.status(400).json({
                     message:"All fields are required!"
                 })
@@ -23,6 +23,7 @@ export const CreateAssessment=async (req, res) =>{
         timeLimit,
         totalMarks,
         isScheduled,
+        isSingleAttempt,
         createdBy: req.id,
       };
 
@@ -189,7 +190,8 @@ export const getAllPublishedAssessment = async (req, res) => {
     try {
       // Fetch all published tests
       const assessments = await Test.find({ isPublished: true })
-        .populate("createdBy", "name");
+        .populate("createdBy", "name")
+        .populate("course", "courseTitle");;
   
       if (assessments.length === 0) {
         return res.status(404).json({ message: "No published assessments found." });

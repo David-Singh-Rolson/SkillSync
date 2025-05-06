@@ -57,6 +57,7 @@
 // export const TestAttempt = mongoose.model("TestAttempt", testAttemptSchema);
 
 import mongoose from "mongoose";
+import { type } from "os";
 
 // const responseSchema = new mongoose.Schema({
 //   question: {
@@ -110,6 +111,9 @@ const testAttemptSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  overallAccuracy:{
+    type:Number
+  },
   percentage: {
     type: Number,
   },
@@ -141,6 +145,16 @@ const testAttemptSchema = new mongoose.Schema({
     type: String,
     enum: ["Topic", "Mixed"],
     default: "Topic",
+  },
+  testLevel: {// new field
+    type: String,
+    enum: ["Beginner", "Medium","Advance"],
+    default: "Beginner",
+    // required:true
+  },
+  performanceTrend: {
+    type: String,
+    enum: ['Improving', 'Declining', 'Stable'],
   },
   remarks: {
     type: String,

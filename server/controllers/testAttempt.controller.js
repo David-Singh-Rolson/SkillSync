@@ -45,7 +45,7 @@ export const getQuestionForAttempt = async (req, res) => {
         .status(400)
         .json({ message: "Missing assessmentId or userId" });
     }
-    
+
     let attempt = await TestAttempt.findOne({
       student: userId,
       test: assessmentId,
@@ -103,7 +103,7 @@ export const submitTestAttempt = async (req, res) => {
     Hard: 3,
   };
   try {
-    const { attemptId, responses,testType } = req.body;
+    const { attemptId, responses, testType, testLevel } = req.body;
 
     if (!attemptId || !responses || typeof responses !== "object") {
       return res.status(400).json({ message: "Invalid request data" });
@@ -120,11 +120,11 @@ export const submitTestAttempt = async (req, res) => {
     }
 
     const structuredResponses = [];
-let totalDifficulty=0;
-let topicPerformance = {};
-let topicWiseMarks = {};
- let totalMarksPossible = 0;
- let totalMarksAwarded =0;
+    let totalDifficulty = 0;
+    let topicPerformance = {};
+    let topicWiseMarks = {};
+    let totalMarksPossible = 0;
+    let totalMarksAwarded = 0;
     for (const [questionId, data] of Object.entries(responses)) {
       const question = await Question.findById(questionId);
       console.log("ques", question);
@@ -134,9 +134,9 @@ let topicWiseMarks = {};
         isCorrect: false, // calculate below
         topic: question.topic,
         marksAwarded: 0,
-        testType:testType
+        testType: testType,
       };
-      totalDifficulty+=difficultyMap[question.difficulty]
+      totalDifficulty += difficultyMap[question.difficulty];
       if (data.questionType === "SingleCorrect") {
         newResponse.selectedOptionIndex = data.response[0];
         // check if correct...
@@ -193,93 +193,151 @@ let topicWiseMarks = {};
       }
 
       topicWiseMarks[newResponse.topic].totalMarks += question.marks;
-      topicWiseMarks[newResponse.topic].marksAwarded += newResponse.marksAwarded;
+      topicWiseMarks[newResponse.topic].marksAwarded +=
+        newResponse.marksAwarded;
 
       totalMarksPossible += question.marks;
       totalMarksAwarded += newResponse.marksAwarded;
       structuredResponses.push(newResponse);
     }
 
-    let totalScore=0;
+    let totalScore = 0,
+      correctAns = 0,
+      totalQues = 0;
     structuredResponses.forEach((response) => {
-      totalScore+=response.marksAwarded
+      if (response.marksAwarded > 0) {
+        correctAns++;
+      }
+      totalScore += response.marksAwarded;
+      totalQues++;
     });
+    const testPercentage = (totalScore / attempt.totalMarks) * 100;
     console.log("responsessss", structuredResponses);
     console.log("responsessss2", totalDifficulty);
 
-    let avgQuestionDiffi = structuredResponses.length > 0 ? totalDifficulty / structuredResponses.length : 0; 
+    let avgQuestionDiffi =
+      structuredResponses.length > 0
+        ? totalDifficulty / structuredResponses.length
+        : 0;
     for (let topic in topicWiseMarks) {
+      // doubt how and why
       const { totalMarks, marksAwarded } = topicWiseMarks[topic];
       const performancePercentage = (marksAwarded / totalMarks) * 100;
       topicPerformance[topic] = performancePercentage;
     }
-    
 
     // Calculate avgPreviousPerformance----------- not tested yet
-const previousAttempts = await TestAttempt.find({
-  student: attempt.student,
-  status: "Submitted",
-  _id: { $ne: attempt._id },
-});
+    const previousAttempts = await TestAttempt.find({
+      student: attempt.student,
+      status: "Submitted",
+      _id: { $ne: attempt._id },
+    });
 
-let avgPreviousPerformance = null;
-if (previousAttempts.length > 0) {
-  const totalScore = previousAttempts.reduce((acc, attempt) => acc + attempt.score, 0);
-  avgPreviousPerformance = totalScore / previousAttempts.length;
-}
+    let avgPreviousPerformance = null;
+    if (previousAttempts.length > 0) {
+      const totalScore = previousAttempts.reduce(
+        (acc, attempt) => acc + attempt.score,
+        0
+      );
+      avgPreviousPerformance = totalScore / previousAttempts.length;
+    }
+
+    const overallAccuracy = correctAns / totalQues;
+
+    // STEP: Get last 2 attempts (excluding current one)
+    const lastTwoAttempts = await TestAttempt.find({
+      student: attempt.student,
+      status: "Submitted",
+      _id: { $ne: attempt._id },
+    })
+      .sort({ createdAt: -1 }) // most recent first
+      .limit(2);
+
+    const pastPercentages = lastTwoAttempts
+      .map((a) => a.percentage || 0)
+      .reverse(); // oldest to newest
+    pastPercentages.push(testPercentage);
+
+    // Calculate trend
+    let performanceTrend = "Stable";
+
+    if (pastPercentages.length >= 2) {
+      const [a, b, c] = pastPercentages;
+      if (pastPercentages.length === 3 && a < b && b < c) {
+        performanceTrend = "Improving";
+      } else if (pastPercentages.length === 3 && a > b && b > c) {
+        performanceTrend = "Declining";
+      } else if (
+        pastPercentages.length === 2 &&
+        pastPercentages[0] < pastPercentages[1]
+      ) {
+        performanceTrend = "Improving";
+      } else if (
+        pastPercentages.length === 2 &&
+        pastPercentages[0] > pastPercentages[1]
+      ) {
+        performanceTrend = "Declining";
+      }
+    }
 
     attempt.status = "Submitted";
-    attempt.score=totalScore;
+    attempt.score = totalScore;
     attempt.responses = structuredResponses;
     attempt.avgQuestionDifficulty = avgQuestionDiffi;
     attempt.topicWisePerformance = topicPerformance;
-    attempt.avgPreviousPerformance = avgPreviousPerformance; 
+    attempt.avgPreviousPerformance = avgPreviousPerformance;
+    attempt.percentage = testPercentage;
+    attempt.overallAccuracy = overallAccuracy;
+    attempt.testLevel = testLevel;
+    attempt.performanceTrend = performanceTrend;
 
-     // 2. Load dynamic topics
-    const topics = getAvailableTopics();
+    // Save trend
+
+    // 2. Load dynamic topics
+    // const topics = getAvailableTopics();
 
     // 3. Create feature object dynamically
-    const features = {};
+    // const features = {};
 
-    topics.forEach(topic => {
-      features[topic] = attempt.topicWisePerformance.get(topic) || 0;
-    });
+    // topics.forEach(topic => {
+    //   features[topic] = attempt.topicWisePerformance.get(topic) || 0;
+    // });
 
-    features.testType = structuredResponses[0].testType;// what is this testtype used for
-    features.avgPreviousPerformance = attempt.avgPreviousPerformance || 0;
-    features.avgQuestionDifficulty = attempt.avgQuestionDifficulty || 2;
+    // features.testType = structuredResponses[0].testType;// what is this testtype used for
+    // features.avgPreviousPerformance = attempt.avgPreviousPerformance || 0;
+    // features.avgQuestionDifficulty = attempt.avgQuestionDifficulty || 2;
 
-    console.log("ML Features to Send:", features);
+    // console.log("ML Features to Send:", features);
 
-     // 4. Call ML API to get recommended course
-     const recommendedCourseId = await getMLRecommendedCourse(features);
+    // 4. Call ML API to get recommended course
+    //  const recommendedCourseId = await getMLRecommendedCourse(features);
 
-     if (recommendedCourseId) {
-       attempt.labelCourseId = recommendedCourseId;
-     }
+    //  if (recommendedCourseId) {
+    //    attempt.labelCourseId = recommendedCourseId;
+    //  }
 
     await attempt.save();
 
     // ML Integration
-// let recommendedTopics = [];
-// try {
-//   const mlInput = {
-//     topicWisePerformance: topicPerformance,
-//     avgQuestionDifficulty: avgQuestionDiffi,
-//     avgPreviousPerformance: avgPreviousPerformance ?? 0,
-//   };
+    // let recommendedTopics = [];
+    // try {
+    //   const mlInput = {
+    //     topicWisePerformance: topicPerformance,
+    //     avgQuestionDifficulty: avgQuestionDiffi,
+    //     avgPreviousPerformance: avgPreviousPerformance ?? 0,
+    //   };
 
-//   const mlResponse = await axios.post('http://localhost:5000/predict', mlInput);
-//   recommendedTopics = mlResponse.data.recommendedTopics;
-// } catch (err) {
-//   console.error("Error calling ML server:", err.message);
-//   recommendedTopics = [];
-// }
+    //   const mlResponse = await axios.post('http://localhost:5000/predict', mlInput);
+    //   recommendedTopics = mlResponse.data.recommendedTopics;
+    // } catch (err) {
+    //   console.error("Error calling ML server:", err.message);
+    //   recommendedTopics = [];
+    // }
 
     return res.status(200).json({
       message: "Test submitted successfully",
       attempt,
-      recommendedCourseId: recommendedCourseId
+      // recommendedCourseId: recommendedCourseId
       // recommendedTopics
     });
   } catch (error) {

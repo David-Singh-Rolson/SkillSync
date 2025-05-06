@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { useFetchTestQuestionsMutation } from "@/features/api/testAttemptApi";
 import { useSelector } from "react-redux";
 import Quiz from "@/components/quiz";
@@ -9,6 +9,9 @@ const AssessmentDetail = () => {
   const testId = params.assessmentId;
   const userId = useSelector((state) => state.auth.user?._id);
   const role = useSelector((state) => state.auth.user?.role);
+  const [searchParams] = useSearchParams();
+  const testType = searchParams.get("type");
+  const testLevel = searchParams.get("level");
 
   const [fetchTestQuestions, { data, isLoading, isError, isSuccess }] =
     useFetchTestQuestionsMutation();
@@ -26,7 +29,7 @@ const AssessmentDetail = () => {
           <Loader2 className="animate-spin h-8 w-8 text-gray-500" />
         </div>
       ) : isSuccess && data ? (
-        <Quiz quizData={data} />
+        <Quiz quizData={data} testType={testType} testLevel={testLevel} />
       ) : (
         <div className="text-center text-red-500">
           Something went wrong or no questions found!
