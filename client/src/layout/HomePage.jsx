@@ -8,8 +8,15 @@ import { useLoadUserQuery } from "../features/api/authApi";
 import { Loader2 } from "lucide-react";
 import { useGetUserRecommendationsQuery } from "@/features/api/recommendationApi";
 
+
 const HomePage = () => {
   const { data, isLoading,refetch } = useLoadUserQuery();
+  const {data:recommendationdata,isSuccess,isError}=useGetUserRecommendationsQuery()
+  useEffect(() => {
+    console.log("recom data",JSON.stringify(recommendationdata));
+    
+  }, [])
+  
 
 
 useEffect(() => {
@@ -24,7 +31,7 @@ useEffect(() => {
   return (
     <>
       <HeroSection />
-      {data?.user?.role === "student" && <RecommendedCourses />}
+      {data?.user?.role === "student" && <RecommendedCourses  recommendationdata={recommendationdata}/>}
       <Assessments role={data?.user?.role} />
       <Courses />
     </>

@@ -40,6 +40,14 @@ const Dashboard = () => {
           <p className="text-3xl font-bold text-blue-600">{totalRevenue}</p>
         </CardContent>
       </Card>
+      <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
+        <CardHeader>
+          <CardTitle>Total Assessments</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-3xl font-bold text-blue-600">2</p>
+        </CardContent>
+      </Card>
 
       {/* Course Prices Card */}
       <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 col-span-1 sm:col-span-2 md:col-span-3 lg:col-span-4">

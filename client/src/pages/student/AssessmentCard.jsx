@@ -21,7 +21,7 @@ import TestAlert from "./TestAlert";
 
 const AssessmentCard = ({ assessment, role }) => {
   const navigate = useNavigate();
-  console.log("newsss", assessment);
+  // console.log("newsss", assessment);
 
   if (!assessment) {
     return (

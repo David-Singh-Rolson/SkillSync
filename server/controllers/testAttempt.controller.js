@@ -1,8 +1,9 @@
 import { Test } from "../models/test.model.js";
 import { TestAttempt } from "../models/testAttempt.model.js";
-import { Question } from "../models/question.model.js"; // Assuming you have this model
+import { Question } from "../models/question.model.js"; 
 import { getAvailableTopics } from "../utils/topics.js";
 import { getMLRecommendedCourse } from "../utils/mlService.js";
+import axios from "axios";
 export const getQuestionForAttempt = async (req, res) => {
   try {
     const { assessmentId, userId } = req.body;
@@ -119,6 +120,12 @@ export const submitTestAttempt = async (req, res) => {
       return res.status(403).json({ message: "Test already submitted" });
     }
 
+    const questionLevelStats = {
+      easy: { attempted: 0, correct: 0, accuracy: 0 },
+      medium: { attempted: 0, correct: 0, accuracy: 0 },
+      hard: { attempted: 0, correct: 0, accuracy: 0 },
+    };
+
     const structuredResponses = [];
     let totalDifficulty = 0;
     let topicPerformance = {};
@@ -128,6 +135,7 @@ export const submitTestAttempt = async (req, res) => {
     for (const [questionId, data] of Object.entries(responses)) {
       const question = await Question.findById(questionId);
       console.log("ques", question);
+      
 
       let newResponse = {
         question: questionId,
@@ -135,6 +143,7 @@ export const submitTestAttempt = async (req, res) => {
         topic: question.topic,
         marksAwarded: 0,
         testType: testType,
+        quesLevel: question.difficulty,
       };
       totalDifficulty += difficultyMap[question.difficulty];
       if (data.questionType === "SingleCorrect") {
@@ -187,6 +196,14 @@ export const submitTestAttempt = async (req, res) => {
           }
         }
       }
+      // Update question level stats
+      const difficultyKey = question.difficulty.toLowerCase();
+      if (questionLevelStats[difficultyKey]) {
+        questionLevelStats[difficultyKey].attempted += 1;
+        if (newResponse.isCorrect) {
+          questionLevelStats[difficultyKey].correct += 1;
+        }
+      }
       console.log("NewResponsessss", newResponse);
       if (!topicWiseMarks[newResponse.topic]) {
         topicWiseMarks[newResponse.topic] = { totalMarks: 0, marksAwarded: 0 };
@@ -199,6 +216,13 @@ export const submitTestAttempt = async (req, res) => {
       totalMarksPossible += question.marks;
       totalMarksAwarded += newResponse.marksAwarded;
       structuredResponses.push(newResponse);
+    }
+
+    // Compute accuracy for each difficulty level
+    for (const level in questionLevelStats) {
+      const stats = questionLevelStats[level];
+      stats.accuracy =
+        stats.attempted > 0 ? stats.correct / stats.attempted : 0;
     }
 
     let totalScore = 0,
@@ -219,12 +243,12 @@ export const submitTestAttempt = async (req, res) => {
       structuredResponses.length > 0
         ? totalDifficulty / structuredResponses.length
         : 0;
-    for (let topic in topicWiseMarks) {
-      // doubt how and why
-      const { totalMarks, marksAwarded } = topicWiseMarks[topic];
-      const performancePercentage = (marksAwarded / totalMarks) * 100;
-      topicPerformance[topic] = performancePercentage;
-    }
+    // for (let topic in topicWiseMarks) {
+    //   // doubt how and why
+    //   const { totalMarks, marksAwarded } = topicWiseMarks[topic];
+    //   const performancePercentage = (marksAwarded / totalMarks) * 100;
+    //   topicPerformance[topic] = performancePercentage;
+    // }
 
     // Calculate avgPreviousPerformance----------- not tested yet
     const previousAttempts = await TestAttempt.find({
@@ -290,50 +314,31 @@ export const submitTestAttempt = async (req, res) => {
     attempt.overallAccuracy = overallAccuracy;
     attempt.testLevel = testLevel;
     attempt.performanceTrend = performanceTrend;
+    attempt.questionLevelStats = questionLevelStats;
 
-    // Save trend
 
-    // 2. Load dynamic topics
-    // const topics = getAvailableTopics();
 
-    // 3. Create feature object dynamically
-    // const features = {};
 
-    // topics.forEach(topic => {
-    //   features[topic] = attempt.topicWisePerformance.get(topic) || 0;
-    // });
 
-    // features.testType = structuredResponses[0].testType;// what is this testtype used for
-    // features.avgPreviousPerformance = attempt.avgPreviousPerformance || 0;
-    // features.avgQuestionDifficulty = attempt.avgQuestionDifficulty || 2;
+    try {
+      const mlPayload = {
+        ...topicPerformance,
+        avgPreviousPerformance: avgPreviousPerformance || 0,
+        avgQuestionDiffi,
+        testType: testType === "Topic" ? "Topic" : "Mixed"
+      };
 
-    // console.log("ML Features to Send:", features);
+      const mlResponse = await axios.post("http://localhost:5000/predict", mlPayload);
+      const recommended = mlResponse.data.recommendedCourses?.[0];
+      if (recommended) {
+        attempt.labelCourseId = recommended.courseId;
+      }
+    } catch (err) {
+      console.log("⚠ ML fallback error", err.message);
+    }
 
-    // 4. Call ML API to get recommended course
-    //  const recommendedCourseId = await getMLRecommendedCourse(features);
-
-    //  if (recommendedCourseId) {
-    //    attempt.labelCourseId = recommendedCourseId;
-    //  }
 
     await attempt.save();
-
-    // ML Integration
-    // let recommendedTopics = [];
-    // try {
-    //   const mlInput = {
-    //     topicWisePerformance: topicPerformance,
-    //     avgQuestionDifficulty: avgQuestionDiffi,
-    //     avgPreviousPerformance: avgPreviousPerformance ?? 0,
-    //   };
-
-    //   const mlResponse = await axios.post('http://localhost:5000/predict', mlInput);
-    //   recommendedTopics = mlResponse.data.recommendedTopics;
-    // } catch (err) {
-    //   console.error("Error calling ML server:", err.message);
-    //   recommendedTopics = [];
-    // }
-
     return res.status(200).json({
       message: "Test submitted successfully",
       attempt,

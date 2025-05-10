@@ -88,7 +88,7 @@ const Navbar = () => {
                   </DropdownMenuItem>
                 )}
                   <DropdownMenuItem onSelect={() => navigateAndClose("/profile")}>
-                    Edit Profile
+                     Profile
                   </DropdownMenuItem>
                   <DropdownMenuItem onSelect={logoutHandler}>
                     Log out

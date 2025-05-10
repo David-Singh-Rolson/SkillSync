@@ -9,6 +9,7 @@ import { questionApi } from "@/features/api/questionApi";
 import { testAttemptApi } from "@/features/api/testAttemptApi";
 import {recommendationApi} from "@/features/api/recommendationApi"
 import { mcqApi } from "@/features/api/mcqBuilderApi";
+import { performanceApi } from "@/features/api/performanceApi";
 
 const rootRedcuer = combineReducers({
     [authApi.reducerPath]:authApi.reducer,
@@ -20,6 +21,7 @@ const rootRedcuer = combineReducers({
     [testAttemptApi.reducerPath]:testAttemptApi.reducer,
     [recommendationApi.reducerPath]:recommendationApi.reducer,
     [mcqApi.reducerPath]:mcqApi.reducer,
+    [performanceApi.reducerPath]:performanceApi.reducer,
     auth:authReducer, 
 });
 export default rootRedcuer;

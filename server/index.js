@@ -13,6 +13,7 @@ import questionRoute from "./routes/question.route.js"
 import testAttemptRoute from "./routes/testAttempt.route.js"
 import recommendationRoute from "./routes/recommendation.route.js"
 import generateMCQRoute from "./routes/mcqBuilder.route.js"
+import performanceRoute from "./routes/performance.route.js"
 dotenv.config({});
 
 // call database connection here
@@ -41,7 +42,11 @@ app.use("/api/v1/question", questionRoute);
 app.use("/api/v1/test/attempt", testAttemptRoute);
 app.use("/api/v1", recommendationRoute);
 app.use("/api/v1", generateMCQRoute);
- 
+app.use("/api/v1", performanceRoute);
+ // 404 handler
+app.use((req, res, next) => {
+    res.status(404).json({ message: "Route not found" });
+  });
  
 app.listen(PORT, () => {
     console.log(`Server listen at port ${PORT}`);

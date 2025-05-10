@@ -84,12 +84,31 @@ const responseSchema = new mongoose.Schema({
   selectedIntegerAnswer: Number, // for Integer-type exact answers (optional)
   selectedCorrectAnswer:String,
   isCorrect: Boolean,
+  quesLevel:String,
   topic: String,
   marksAwarded: {
     type: Number,
     default: 0,
   },
 });
+
+const questionLevelStatsSchema = new mongoose.Schema({
+  easy: {
+    attempted: { type: Number, default: 0 },
+    correct: { type: Number, default: 0 },
+    accuracy: { type: Number, default: 0 },
+  },
+  medium: {
+    attempted: { type: Number, default: 0 },
+    correct: { type: Number, default: 0 },
+    accuracy: { type: Number, default: 0 },
+  },
+  hard: {
+    attempted: { type: Number, default: 0 },
+    correct: { type: Number, default: 0 },
+    accuracy: { type: Number, default: 0 },
+  },
+}, { _id: false }); // No separate _id for sub-schema
 
 const testAttemptSchema = new mongoose.Schema({
   student: {
@@ -111,6 +130,10 @@ const testAttemptSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  avgTopicDifficulty: {
+    type: Number,
+    default: 0,
+  },
   overallAccuracy:{
     type:Number
   },
@@ -122,7 +145,10 @@ const testAttemptSchema = new mongoose.Schema({
     enum: ["Submitted", "Incomplete"],
     default: "Submitted",
   },
-  // timeTaken: Number, // in seconds
+  timeTaken: {
+    type:Number
+  }, // in seconds
+  questionLevelStats:questionLevelStatsSchema,
   topicWisePerformance: {
     type: Map,
     of: Number, // percentage score per topic

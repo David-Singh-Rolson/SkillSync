@@ -5,19 +5,19 @@ import { useGetUserRecommendationsQuery } from '@/features/api/recommendationApi
 
 const RecommendedCourses = () => {
     const {data:recommendedData,isLoading:recommendedDataLoading}=useGetUserRecommendationsQuery()
-  console.log("aidata",recommendedData);
-    const isLoading=true;
+  console.log("aidata",recommendedData?.recommendedCourses);
+    // const isLoading=true;
   return (
     <div className="bg-gray-50 dark:bg-[#141414]">
       <div className="max-w-7xl mx-auto p-6">
         <h2 className="font-bold text-3xl text-center mb-10">Recommended for You </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {isLoading ? (
+          {recommendedDataLoading ? (
             Array.from({ length: 8 }).map((_, index) => (
               <CourseSkeleton key={index} />
             ))
           ) : (
-           data?.courses && data.courses.map((course, index) => <Course key={index} course={course}/>) 
+            recommendedData?.recommendedCourses && recommendedData?.recommendedCourses.map((course, index) => <Course key={index} course={course}/>) 
           )}
         </div>
       </div>

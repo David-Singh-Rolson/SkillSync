@@ -76,3 +76,16 @@
       1. How do i know that this is for a particular user or it is generic
       2. For now it only gave one why not Multiple
       3. Is it valid for mixed and how course will be tagged in mixed test and if single recommendation is done now then how will it recommend in mixed test
+
+
+
+
+      4. Fix bug for if course is enrolled show on card 
+      5. Make my learning page- refeetch automatically
+      6. Fix course Desc
+
+
+
+      ai me chnge
+      labelcourseid aur avg Prev Performance
+      
