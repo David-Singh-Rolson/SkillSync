@@ -11,6 +11,17 @@ export const performanceApi=createApi({
         credentials:"include",
     }),
     endpoints:(builder)=>({
-        
-    })
-})
+        getLatestTestResult:builder.mutation({
+            query:({userId})=>({
+                url:"/",
+                method:"POST",
+                body:{userId}
+            }),
+        }),
+    }),
+});
+
+
+
+
+export const {useGetLatestTestResultMutation}=performanceApi;

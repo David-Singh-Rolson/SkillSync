@@ -1,8 +1,8 @@
 import express from "express";
 import isAuthenticated from "../middlewares/isAuthenticated.js";
-import {getPerformance} from "../controllers/performance.controller.js"
+import {getLatestTestResult} from "../controllers/performance.controller.js"
 const router = express.Router();
-router.route("/").post(isAuthenticated,getPerformance);
+router.route("/").post(isAuthenticated,getLatestTestResult);
 
 
 

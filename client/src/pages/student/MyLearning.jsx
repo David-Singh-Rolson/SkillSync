@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import Course from "./Course";
 import { useLoadUserQuery } from "@/features/api/authApi";
-
+import { StudentDashboard } from "@/components/student-dashboard";
 const MyLearning = () => { 
   const {data, isLoading} = useLoadUserQuery();
 
@@ -10,7 +10,7 @@ const MyLearning = () => {
   return (
     <div className="max-w-4xl mx-auto my-10 px-4 md:px-0">
       <h1 className="font-bold text-2xl">MY LEARNING</h1>
-      <div className="my-5">
+      {/* <div className="my-5">
         {isLoading ? (
           <MyLearningSkeleton />
         ) : myLearning.length === 0 ? (
@@ -22,7 +22,8 @@ const MyLearning = () => {
             ))}
           </div>
         )}
-      </div>
+      </div> */}
+      <StudentDashboard/>
     </div>
   );
 };

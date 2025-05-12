@@ -1,12 +1,12 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";// api khud se likho
 
-const BASE_URL = "http://localhost:8080/api/v1";
+const RECOMMENDATION_API = "http://localhost:8080/api/v1";
 
 export const recommendationApi = createApi({
   reducerPath: "recommendationApi",
   tagTypes: ["Recommendation"],
   baseQuery: fetchBaseQuery({
-    baseUrl: BASE_URL,
+    baseUrl: RECOMMENDATION_API,
     credentials: "include", // if using cookies
   }),
   endpoints: (builder) => ({
