@@ -1,6 +1,8 @@
+const BASE_API_URL = import.meta.env.VITE_BASE_API_URL;
+
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";// api khud se likho
 
-const RECOMMENDATION_API = "http://localhost:8080/api/v1";
+const RECOMMENDATION_API = `${BASE_API_URL}/api/v1`;
 
 export const recommendationApi = createApi({
   reducerPath: "recommendationApi",

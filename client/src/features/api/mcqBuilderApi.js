@@ -1,6 +1,8 @@
+const BASE_API_URL = import.meta.env.VITE_BASE_API_URL;
+
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-const MCQ_API="http://localhost:8080/api/v1"
+const MCQ_API=`${BASE_API_URL}/api/v1`
 
 
 export const mcqApi = createApi({
