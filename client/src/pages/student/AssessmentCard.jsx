@@ -32,9 +32,9 @@ const AssessmentCard = ({ assessment, role }) => {
   }
 
   const now = new Date();
-  const start = null,
-    end = null,
-    isTestActive = true;
+  let start = null,
+    end = null;
+    let isTestActive = true;
   if (assessment?.startTime && assessment?.endTime) {
     start = new Date(assessment?.startTime);
     end = new Date(assessment?.endTime);

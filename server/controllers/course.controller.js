@@ -33,7 +33,6 @@ export const createCourse = async (req,res) => {
 export const searchCourse = async (req,res) => {
     try {
         const {query = "", categories = [], sortByPrice =""} = req.query;
-        console.log(categories);
         
         // create search query
         const searchCriteria = {
@@ -229,7 +228,6 @@ export const getCourseLecture = async (req,res) => {
 export const editLecture = async (req,res) => {
     try {
         const {lectureTitle, videoInfo, isPreviewFree} = req.body;
-        console.log("body",req.body);
         
         
         const {courseId, lectureId} = req.params;

@@ -2,7 +2,6 @@ import { Test } from "../models/test.model.js";
 
 export const CreateAssessment=async (req, res) =>{
     try {
-        console.log(req.body)
         const {testTitle,testDescription,instructions,course,testType,timeLimit,totalMarks,testLevel, startTime,
             endTime,isScheduled,isSingleAttempt}=req.body;
         if(!testTitle || !testType || !timeLimit || !testLevel ||  !testDescription || !instructions || !course || !totalMarks  || isScheduled ){
@@ -77,8 +76,6 @@ export const addQuestionInAssessment=async (req,res) =>{
         const { assessmentId } = req.params;
         const { questionId } = req.body;
         // const {assessmentId,questionId}=req.body
-        console.log("ass id from add ques in ass contr",assessmentId);
-        console.log("ques id from add ques in ass contr",questionId);
         
         if (!assessmentId || !questionId) {
             return res.status(400).json({

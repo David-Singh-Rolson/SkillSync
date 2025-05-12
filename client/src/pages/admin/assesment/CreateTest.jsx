@@ -79,8 +79,6 @@ const CreateTest = () => {
   };
 
   const CreateAssessmentHandler = async () => {
-    console.log("input", input);
-
     try {
       const res = await createAssessment({ ...input }).unwrap(); // unwrap to get actual response
       toast.success("Assessment Created Successfully");

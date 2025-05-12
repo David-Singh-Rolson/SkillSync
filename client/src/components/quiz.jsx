@@ -24,7 +24,6 @@ import { useSubmitTestAttemptMutation } from "@/features/api/testAttemptApi";
 // import { questions } from "../../data/questions"
 
 export default function Quiz({ quizData , testType,testLevel }) {
-  console.log("quiz", quizData);
   if (!quizData || quizData.length === 0) {
     return <Loader2 />;
   }
@@ -201,7 +200,6 @@ export default function Quiz({ quizData , testType,testLevel }) {
     setShowResults(true);
     setIsTimerRunning(false);
     submitTestAttempt({ attemptId, responses: answers,testType ,testLevel});
-    console.log("Submitting answers:", answers);
   };
 
   const handleRestartQuiz = () => {

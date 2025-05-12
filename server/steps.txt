@@ -8,6 +8,16 @@
 
 
 
+After This...
+Make all development changes in the dev branch.
+
+When tested and ready, merge dev into main via a Pull Request (PR) or locally using:
+
+git checkout main
+git merge dev
+git push origin main
+
+
 Bonus (recommended ideas)
 Add allowReattempts: Boolean to Test in future if needed.
 

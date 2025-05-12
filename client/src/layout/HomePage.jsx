@@ -12,10 +12,7 @@ import { useGetUserRecommendationsQuery } from "@/features/api/recommendationApi
 const HomePage = () => {
   const { data, isLoading,refetch } = useLoadUserQuery();
   const {data:recommendationdata,isSuccess,isError}=useGetUserRecommendationsQuery()
-  useEffect(() => {
-    console.log("recom data",JSON.stringify(recommendationdata));
-    
-  }, [])
+ 
   
 
 

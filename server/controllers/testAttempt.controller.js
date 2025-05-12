@@ -134,7 +134,6 @@ export const submitTestAttempt = async (req, res) => {
     let totalMarksAwarded = 0;
     for (const [questionId, data] of Object.entries(responses)) {
       const question = await Question.findById(questionId);
-      console.log("ques", question);
       
 
       let newResponse = {
@@ -204,7 +203,6 @@ export const submitTestAttempt = async (req, res) => {
           questionLevelStats[difficultyKey].correct += 1;
         }
       }
-      console.log("NewResponsessss", newResponse);
       if (!topicWiseMarks[newResponse.topic]) {
         topicWiseMarks[newResponse.topic] = { totalMarks: 0, marksAwarded: 0 };
       }
@@ -236,8 +234,7 @@ export const submitTestAttempt = async (req, res) => {
       totalQues++;
     });
     const testPercentage = (totalScore / attempt.totalMarks) * 100;
-    console.log("responsessss", structuredResponses);
-    console.log("responsessss2", totalDifficulty);
+
 
     let avgQuestionDiffi =
       structuredResponses.length > 0

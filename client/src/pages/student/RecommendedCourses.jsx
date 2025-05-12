@@ -5,7 +5,7 @@ import { useGetUserRecommendationsQuery } from '@/features/api/recommendationApi
 
 const RecommendedCourses = () => {
     const {data:recommendedData,isLoading:recommendedDataLoading}=useGetUserRecommendationsQuery()
-  console.log("aidata",recommendedData?.recommendedCourses);
+  // console.log("aidata",recommendedData?.recommendedCourses);
     // const isLoading=true;
   return (
     <div className="bg-gray-50 dark:bg-[#141414]">

@@ -71,16 +71,16 @@ export default function CreateQuestions() {
     }));
   };
 
-  useEffect(() => {
-    console.log("ques by  asssid", getQuesByAssIdData?.assessment?.questions);
-  }, [getQuesByAssIdData]);
+  // useEffect(() => {
+  //   console.log("ques by  asssid", getQuesByAssIdData?.assessment?.questions);
+  // }, [getQuesByAssIdData]);
 
   const handleGeneratedData = async (data) => {
     setGeneratedData(data); // Store the received data (object) in generatedData
-    console.log("Received generated data:", generatedData);
+    // console.log("Received generated data:", generatedData);
     if(data){
       const { questions } = data;
-      console.log("gen ai data",generatedData);
+      // console.log("gen ai data",generatedData);
       if(questions?.SingleCorrect){
         for (const questionData of questions?.SingleCorrect) {
           // Update state with the current question data
@@ -181,10 +181,8 @@ export default function CreateQuestions() {
   const handleSubmitAI = async () => {
     try {
       const res = await createNewQuestion(generatedQuestion).unwrap(); // unwrap to handle success/failure properly
-      console.log("ques res", res);
 
       const questionId = res.currentQuestion._id;
-      console.log("ques id", questionId);
 
       const newRes = await addQuestion({ assessmentId, questionId }).unwrap();
 
@@ -221,10 +219,8 @@ export default function CreateQuestions() {
         question.options = ["True", "False"];
       }
       const res = await createNewQuestion(question).unwrap(); // unwrap to handle success/failure properly
-      console.log("ques res", res);
 
       const questionId = res.currentQuestion._id;
-      console.log("ques id", questionId);
 
       const newRes = await addQuestion({ assessmentId, questionId }).unwrap();
 

@@ -22,11 +22,6 @@ export const TestTable = () => {
   if (isLoading) {
     return <Loader2 />;
   }
-  console.log(data);
-
-
-  
-
   return (
     <div>
       <Button onClick={() => navigate(`create-test`)}>Create a new test</Button>

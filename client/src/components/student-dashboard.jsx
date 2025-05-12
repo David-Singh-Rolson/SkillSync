@@ -21,7 +21,6 @@ export function StudentDashboard() {
  getLatestTestResult(userId)
 
   }, [])
-console.log("result",data);
   
   const studentData = {
     _id: "681c7eb5433399fe0f6700ce",

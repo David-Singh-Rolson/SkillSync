@@ -58,7 +58,7 @@ import { Course } from "../models/course.model.js";
 export const getUserRecommendations = async (req, res) => {
   try {
     const userId = req.id;
-    console.log("👤 userId:", userId);
+    // console.log("👤 userId:", userId);
 
     // 1️⃣ Fetch All Submitted Attempts of that User
     const attempts = await TestAttempt.find({
@@ -96,7 +96,7 @@ export const getUserRecommendations = async (req, res) => {
     features.avgQuestionDifficulty = +(totalDiff / count).toFixed(2);
     features.testType = "Mixed"; // default testType for this view
 
-    console.log("📊 Features sent to ML:", features);
+    // console.log("📊 Features sent to ML:", features);
 
     // 4️⃣ Call ML API
     const mlRecommendations = await getMLRecommendedCourse(features);

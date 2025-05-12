@@ -2,7 +2,7 @@ import { Question } from "../models/question.model.js";
 
 export const createQuestion = async (req, res) => {
   try {
-    console.log("ai gen ques in contr",req.body);
+    // console.log("ai gen ques in contr",req.body);
     const {
       questionText,
       topic,
@@ -41,7 +41,7 @@ export const createQuestion = async (req, res) => {
       createdBy: req.id,
     });
 
-    console.log("currQues",currentQuestion);
+    // console.log("currQues",currentQuestion);
     return res.status(201).json({currentQuestion,message:"Question Created"})// why not comming
   } catch (error) {
     console.log(error);

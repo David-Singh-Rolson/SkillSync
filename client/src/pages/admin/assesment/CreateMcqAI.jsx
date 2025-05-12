@@ -107,7 +107,7 @@ const CreateMcqAI = ({ open, onClose, onDataGenerated }) => {
         quizConfig.questions.map((q) => [q.type, q.count])
       ),
     };
-    console.log("Generating quiz with config:", formattedConfig);
+    // console.log("Generating quiz with config:", formattedConfig);
     // Here you would typically call an API to generate the quiz
     generateMCQs(formattedConfig);
   };
