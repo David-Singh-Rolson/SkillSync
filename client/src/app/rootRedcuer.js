@@ -1,5 +1,6 @@
 import { combineReducers } from "@reduxjs/toolkit";
 import authReducer from "../features/authSlice"; 
+import uiReducer from "../features/uiSlice"
 import { authApi } from "@/features/api/authApi";
 import { courseApi } from "@/features/api/courseApi";
 import { purchaseApi } from "@/features/api/purchaseApi";
@@ -10,6 +11,7 @@ import { testAttemptApi } from "@/features/api/testAttemptApi";
 import {recommendationApi} from "@/features/api/recommendationApi"
 import { mcqApi } from "@/features/api/mcqBuilderApi";
 import { performanceApi } from "@/features/api/performanceApi";
+import { otpApi } from "@/features/api/otpApi";
 
 const rootRedcuer = combineReducers({
     [authApi.reducerPath]:authApi.reducer,
@@ -22,6 +24,8 @@ const rootRedcuer = combineReducers({
     [recommendationApi.reducerPath]:recommendationApi.reducer,
     [mcqApi.reducerPath]:mcqApi.reducer,
     [performanceApi.reducerPath]:performanceApi.reducer,
+    [otpApi.reducerPath]:otpApi.reducer,
     auth:authReducer, 
+    ui:uiReducer
 });
 export default rootRedcuer;

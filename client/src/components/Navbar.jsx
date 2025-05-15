@@ -1,6 +1,7 @@
-
 import { Menu, School } from "lucide-react";
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { setShowLoginModal ,setModalType} from "@/features/uiSlice";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,9 +33,10 @@ const Navbar = () => {
   const { user } = useSelector((store) => store.auth);
   const [logoutUser, { data, isSuccess }] = useLogoutUserMutation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   // Add state to control dropdown open/close
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  
+
   const logoutHandler = async () => {
     setDropdownOpen(false); // Close dropdown when logging out
     await logoutUser();
@@ -61,7 +63,7 @@ const Navbar = () => {
           <School size={"30"} />
           <Link to="/">
             <h1 className="hidden md:block font-extrabold text-2xl">
-             SkillSync
+              SkillSync
             </h1>
           </Link>
         </div>
@@ -82,13 +84,17 @@ const Navbar = () => {
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                {user?.role === "student" && (
-                  <DropdownMenuItem onSelect={() => navigateAndClose("/my-learning")}>
-                    My learning
-                  </DropdownMenuItem>
-                )}
-                  <DropdownMenuItem onSelect={() => navigateAndClose("/profile")}>
-                     Profile
+                  {user?.role === "student" && (
+                    <DropdownMenuItem
+                      onSelect={() => navigateAndClose("/my-learning")}
+                    >
+                      My learning
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuItem
+                    onSelect={() => navigateAndClose("/profile")}
+                  >
+                    Profile
                   </DropdownMenuItem>
                   <DropdownMenuItem onSelect={logoutHandler}>
                     Log out
@@ -97,7 +103,9 @@ const Navbar = () => {
                 {user?.role === "instructor" && (
                   <>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onSelect={() => navigateAndClose("/admin/dashboard")}>
+                    <DropdownMenuItem
+                      onSelect={() => navigateAndClose("/admin/dashboard")}
+                    >
                       Dashboard
                     </DropdownMenuItem>
                   </>
@@ -106,10 +114,15 @@ const Navbar = () => {
             </DropdownMenu>
           ) : (
             <div className="flex items-center gap-2">
-              <Button variant="outline" onClick={() => navigate("/login")}>
+              <Button
+                variant="outline"
+                onClick={() => {dispatch(setModalType("login"));dispatch(setShowLoginModal(true))}}
+              >
                 Login
               </Button>
-              <Button onClick={() => navigate("/login")}>Signup</Button>
+              <Button onClick={() =>{dispatch(setModalType("signup")); dispatch(setShowLoginModal(true))}}>
+                Signup
+              </Button>
             </div>
           )}
           <DarkMode />
@@ -118,7 +131,7 @@ const Navbar = () => {
       {/* Mobile device  */}
       <div className="flex md:hidden items-center justify-between px-4 h-full">
         <h1 className="font-extrabold text-2xl">SkillSync</h1>
-        <MobileNavbar user={user}/>
+        <MobileNavbar user={user} />
       </div>
     </div>
   );
@@ -126,11 +139,11 @@ const Navbar = () => {
 
 export default Navbar;
 
-const MobileNavbar = ({user}) => {
+const MobileNavbar = ({ user }) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [logoutUser, { data, isSuccess }] = useLogoutUserMutation();
-  
+
   // Helper to navigate and close sheet
   const navigateAndClose = (path) => {
     setOpen(false);
@@ -148,7 +161,7 @@ const MobileNavbar = ({user}) => {
       navigate("/login");
     }
   }, [isSuccess]);
-  
+
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
@@ -163,35 +176,37 @@ const MobileNavbar = ({user}) => {
       <SheetContent className="flex flex-col">
         <SheetHeader className="flex flex-row items-center justify-between mt-2">
           <SheetTitle>
-            <span className="cursor-pointer" onClick={() => navigateAndClose("/")}>SkillSync</span>
+            <span
+              className="cursor-pointer"
+              onClick={() => navigateAndClose("/")}
+            >
+              SkillSync
+            </span>
           </SheetTitle>
           <DarkMode />
         </SheetHeader>
         <Separator className="mr-2" />
         <nav className="flex flex-col space-y-4 mt-4">
-          <span 
-            className="cursor-pointer" 
+          <span
+            className="cursor-pointer"
             onClick={() => navigateAndClose("/my-learning")}
           >
             My Learning
           </span>
-          <span 
-            className="cursor-pointer" 
+          <span
+            className="cursor-pointer"
             onClick={() => navigateAndClose("/profile")}
           >
             Edit Profile
           </span>
-          <span 
-            className="cursor-pointer" 
-            onClick={logoutHandler}
-          >
+          <span className="cursor-pointer" onClick={logoutHandler}>
             Log out
           </span>
         </nav>
         {user?.role === "instructor" && (
           <SheetFooter className="mt-auto pb-4">
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               onClick={() => navigateAndClose("/admin/dashboard")}
             >
               Dashboard

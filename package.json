@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon server/index.js",
-    "build":"npm install && npm install --prefix client && npm run build --prefix client",
+    "build": "npm install && npm install --prefix client && npm run build --prefix client",
     "start": "nodemon server/index.js"
   },
   "keywords": [],
@@ -23,7 +23,10 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.8.0",
     "multer": "^1.4.5-lts.1",
+    "nodemailer": "^7.0.3",
     "nodemon": "^3.1.7",
+    "otp-generator": "^4.0.1",
     "stripe": "^17.3.1"
   }
+ 
 }

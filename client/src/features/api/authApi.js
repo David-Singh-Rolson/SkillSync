@@ -75,7 +75,14 @@ export const authApi = createApi({
                 credentials:"include"
             }),
             invalidatesTags: ['User'],
-        })
+        }),
+        resetPassword:builder.mutation({
+            query:({email,password})=>({
+                url:"reset/password",
+                method:"PUT",
+                body:{email,password}
+            }),
+        }),
     })
     
 });
@@ -84,5 +91,6 @@ export const {
     useLoginUserMutation,
     useLogoutUserMutation,
     useLoadUserQuery,
-    useUpdateUserMutation
+    useUpdateUserMutation,
+    useResetPasswordMutation
 } = authApi;

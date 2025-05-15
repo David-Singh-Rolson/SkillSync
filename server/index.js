@@ -14,6 +14,7 @@ import testAttemptRoute from "./routes/testAttempt.route.js"
 import recommendationRoute from "./routes/recommendation.route.js"
 import generateMCQRoute from "./routes/mcqBuilder.route.js"
 import performanceRoute from "./routes/performance.route.js"
+import otpRoute from "./routes/otp.route.js"
 import path from "path"
 dotenv.config({});
 
@@ -45,6 +46,7 @@ app.use("/api/v1/test/attempt", testAttemptRoute);
 app.use("/api/v1", recommendationRoute);
 app.use("/api/v1", generateMCQRoute);
 app.use("/api/v1", performanceRoute);
+app.use("/api/v1/otp", otpRoute);
 
 app.use(express.static(path.join(_dirname,"/client/dist")))
 

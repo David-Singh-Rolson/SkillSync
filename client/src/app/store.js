@@ -10,6 +10,7 @@ import { testAttemptApi } from "@/features/api/testAttemptApi";
 import { recommendationApi } from "@/features/api/recommendationApi";
 import { mcqApi } from "@/features/api/mcqBuilderApi";
 import { performanceApi } from "@/features/api/performanceApi";
+import { otpApi } from "@/features/api/otpApi";
 export const appStore = configureStore({
   reducer: rootRedcuer,
   middleware: (defaultMiddleware) =>
@@ -23,7 +24,8 @@ export const appStore = configureStore({
       testAttemptApi.middleware,
       recommendationApi.middleware,
       mcqApi.middleware,
-      performanceApi.middleware
+      performanceApi.middleware,
+      otpApi.middleware
     ),
 });
 
