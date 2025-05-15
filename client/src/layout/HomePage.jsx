@@ -21,14 +21,19 @@ const HomePage = () => {
   } = useGetUserRecommendationsQuery();
   const { showLoginModal } = useSelector((state) => state.ui);
   const modalType = useSelector((state) => state.ui.modalType);
-
+const authState = useSelector((state) => state.auth);
   useEffect(() => {
-    refetch();
+    if(authState){
+      refetch();
+    }
 
     if (isLoading) {
       return <Loader2 />;
     }
   }, [data]);
+  useEffect(() => {
+   dispatch(setShowLoginModal(false));
+  }, [authState]);
 
   return (
     <>
@@ -54,8 +59,8 @@ const HomePage = () => {
           <Assessments role={data.user.role} />
         </>
       )}
-          <Courses />
-<Footer/>
+      <Courses />
+      <Footer />
     </>
   );
 };

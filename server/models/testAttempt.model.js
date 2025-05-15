@@ -73,6 +73,8 @@ import { type } from "os";
 //     default: 0,
 //   }
 // });
+
+
 const responseSchema = new mongoose.Schema({
   question: {
     type: mongoose.Schema.Types.ObjectId,

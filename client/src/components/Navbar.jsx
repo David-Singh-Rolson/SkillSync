@@ -45,7 +45,7 @@ const Navbar = () => {
   useEffect(() => {
     if (isSuccess) {
       toast.success(data?.message || "User log out.");
-      navigate("/login");
+      navigate("/");
     }
   }, [isSuccess]);
 
@@ -158,7 +158,7 @@ const MobileNavbar = ({ user }) => {
   useEffect(() => {
     if (isSuccess) {
       toast.success(data?.message || "User log out.");
-      navigate("/login");
+      navigate("/");
     }
   }, [isSuccess]);
 

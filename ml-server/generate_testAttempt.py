@@ -1,230 +1,192 @@
-# # ------------------------ generate_test_attempts.py ------------------------
 
-# from faker import Faker
-# import random
-# from datetime import datetime
-# from pymongo import MongoClient
-# from bson import ObjectId
-# from dotenv import load_dotenv
-# import os
-
-# # STEP 1: Load environment variables
-# load_dotenv()
-# MONGO_URI = os.getenv("MONGO_URI")
-# DB_NAME = os.getenv("DB_NAME")
-
-# # STEP 2: Connect to MongoDB
-# client = MongoClient(MONGO_URI)
-# db = client[DB_NAME]
-
-# # STEP 3: Init Faker
-# fake = Faker()
-
-# # STEP 4: Fetch all students (role = student)
-# students = list(db.users.find({"role": "student"}, {"_id": 1}))
-# if not students:
-#     print("⚠ No students found in database!")
-#     exit()
-
-
-# # STEP 5: Fetch all tests (make sure tests exist)
-# tests = list(db.tests.find({}, {"_id": 1, "questions": 1, "testType": 1, "totalMarks": 1}))
-# if not tests:
-#     print("⚠ No tests found in database!")
-#     exit()
-
-# # STEP 6: Fetch all course IDs for labelCourseId reference
-# courses = list(db.courses.find({}, {"_id": 1}))
-# if not courses:
-#     print("⚠ No courses found in database!")
-#     exit()
-# course_ids = [course["_id"] for course in courses]
-
-# # STEP 7: Begin creating test attempts
-# test_attempts = []
-# attempts_per_user = 10  # You can change this number anytime
-
-# for student in students:
-#     student_id = student["_id"]
-#     for _ in range(attempts_per_user):
-#         # Pick a random test
-#         test = random.choice(tests)
-#         test_id = test["_id"]
-#         q_ids = test["questions"]
-#         total_marks = test["totalMarks"]
-#         test_type = test["testType"]
-
-#         responses = []
-#         score = 0
-#         topic_scores = {}
-
-#         # For each question in test
-#         for q_id in q_ids:
-#             q = db.questions.find_one({"_id": q_id})
-#             if not q:
-#                 continue  # Skip if question not found
-
-#             is_correct = random.choice([True, False])
-#             awarded = q["marks"] if is_correct else 0
-#             score += awarded
-
-#             topic = q["topic"]
-#             topic_scores.setdefault(topic, []).append(awarded)
-
-#             responses.append({
-#                 "question": q_id,
-#                 "selectedOptionIndex": random.randint(0, len(q["options"]) - 1) if q["options"] else None,
-#                 "isCorrect": is_correct,
-#                 "topic": topic,
-#                 "marksAwarded": awarded
-#             })
-
-#         # Calculate average score per topic
-#         topicWisePerformance = {k: round(sum(v)/len(v), 2) for k, v in topic_scores.items()}
-
-#         # Final test attempt object
-#         test_attempts.append({
-#             "student": student_id,
-#             "test": test_id,
-#             "responses": responses,
-#             "totalMarks": total_marks,
-#             "score": score,
-#             "status": "Submitted",
-#             "topicWisePerformance": topicWisePerformance,
-#             "avgQuestionDifficulty": round(random.uniform(1.0, 2.0), 1),
-#             "avgPreviousPerformance": round(random.uniform(30, 80), 2),
-#             "labelCourseId": random.choice(course_ids),
-#             "testType": test_type,
-#             "createdAt": datetime.now(),
-#             "updatedAt": datetime.now()
-#         })
-
-# # STEP 8: Insert into DB
-# if test_attempts:
-#     db.testattempts.insert_many(test_attempts)
-#     print(f"✅ Inserted {len(test_attempts)} test attempts successfully!")
-# else:
-#     print("⚠ No attempts created.")
-
-# ------------------------ generate_test_attempts.py ------------------------
-
-from faker import Faker
-import random
-from datetime import datetime
-from pymongo import MongoClient
-from bson import ObjectId
-from dotenv import load_dotenv
 import os
+import random
+from faker import Faker
+from datetime import datetime
+from dotenv import load_dotenv
+from pymongo import MongoClient
 
-# STEP 1️⃣: Load environment variables
+fake = Faker()
 load_dotenv()
 MONGO_URI = os.getenv("MONGO_URI")
 DB_NAME = os.getenv("DB_NAME")
-
-# STEP 2️⃣: Connect to MongoDB
 client = MongoClient(MONGO_URI)
 db = client[DB_NAME]
 
-# STEP 3️⃣: Init Faker
-fake = Faker()
+# 🧹 Wipe all
+# for col in ["users", "courses", "lectures", "questions", "tests", "testattempts"]:
+#     db[col].delete_many({})
 
-# STEP 4️⃣: Fetch all students (role = student)
-students = list(db.users.find({"role": "student"}, {"_id": 1}))
-print(f"👨‍🎓 Total students found: {len(students)}")
-if not students:
-    print("⚠ No students found in DB. Run generate_seed_data.py first!")
-    exit()
+# 👤 Users
+students, teachers = [], []
+for _ in range(10):
+    teachers.append({
+        "name": fake.name(),
+        "email": fake.unique.email(),
+        "role": "instructor",
+        "password": "hashed"
+    })
 
-# STEP 5️⃣: Fetch all tests
-tests = list(db.tests.find({}, {"_id": 1, "questions": 1, "testType": 1, "totalMarks": 1}))
-print(f"🧪 Total tests found: {len(tests)}")
-if not tests:
-    print("⚠ No tests found in DB. Run generate_seed_data.py first!")
-    exit()
+for _ in range(50):
+    students.append({
+        "name": fake.name(),
+        "email": fake.unique.email(),
+        "role": "student",
+        "password": "hashed"
+    })
 
-# STEP 6️⃣: Fetch all courses
-courses = list(db.courses.find({}, {"_id": 1}))
-print(f"📚 Total courses found: {len(courses)}")
-if not courses:
-    print("⚠ No courses found in DB. Run generate_seed_data.py first!")
-    exit()
+teacher_ids = db.users.insert_many(teachers).inserted_ids
+student_ids = db.users.insert_many(students).inserted_ids
 
-course_ids = [course["_id"] for course in courses]
+# 📚 Courses
+courses = []
+for _ in range(5):
+    courses.append({
+        "title": f"{fake.word().capitalize()} Mastery",
+        "description": fake.text(),
+        "category": fake.word(),
+        "instructor": random.choice(teacher_ids)
+    })
 
-# STEP 7️⃣: Begin test attempt generation
-test_attempts = []
-attempts_per_user = 10  # 🔁 You can modify this safely
+course_ids = db.courses.insert_many(courses).inserted_ids
 
-for student in students:
-    student_id = student["_id"]
-    for _ in range(attempts_per_user):
-        # Pick a random test
-        test = random.choice(tests)
-        test_id = test["_id"]
-        q_ids = test.get("questions", [])
-        total_marks = test.get("totalMarks", 0)
-        test_type = test.get("testType", "Topic")
+# 🎥 Lectures
+lectures = []
+for cid in course_ids:
+    for _ in range(random.randint(3, 6)):
+        lectures.append({
+            "course": cid,
+            "title": fake.sentence(),
+            "videoUrl": fake.url(),
+            "description": fake.text()
+        })
+db.lectures.insert_many(lectures)
 
-        # Skip test if no questions inside
-        if not q_ids:
-            print(f"⚠ Test {test_id} has no questions. Skipping...")
-            continue
+# ❓ Questions + Tests
+questions = []
+tests = []
+test_to_course = {}
 
+for cid in course_ids:
+    test_question_ids = []
+    for _ in range(10):
+        q = {
+            "course": cid,
+            "question": fake.sentence(),
+            "options": [fake.word() for _ in range(4)],
+            "correctOptionIndex": 0,
+            "difficulty": random.choice(["Easy", "Medium", "Hard"]),
+            "topic": random.choice(["DBMS", "OS", "CN", "DSA"]),
+            "marks": 5
+        }
+        q_id = db.questions.insert_one(q).inserted_id
+        questions.append(q_id)
+        test_question_ids.append(q_id)
+
+    # Create 2 tests per course
+    for _ in range(2):
+        selected_qs = random.sample(test_question_ids, 5)
+        test = {
+            "title": fake.word().capitalize() + " Test",
+            "course": cid,
+            "questions": selected_qs,
+            "type": random.choice(["Topic", "Mixed"]),
+            "duration": random.choice([15, 30, 45])
+        }
+        tid = db.tests.insert_one(test).inserted_id
+        tests.append((tid, cid))
+
+# 🧠 Attempts
+difficulty_map = {"Easy": "easy", "Medium": "medium", "Hard": "hard"}
+q_map = {str(q["_id"]): q for q in db.questions.find({})}
+attempts = []
+
+for sid in student_ids:
+    selected_tests = random.sample(tests, 2)
+    for tid, cid in selected_tests:
+        test = db.tests.find_one({"_id": tid})
+        qids = test["questions"]
         responses = []
-        score = 0
-        topic_scores = {}
+        topic_perf, topic_marks = {}, {}
+        q_stats = {"easy": {"attempted": 0, "correct": 0},
+                   "medium": {"attempted": 0, "correct": 0},
+                   "hard": {"attempted": 0, "correct": 0}}
+        total_score, total_marks, total_diff = 0, 0, 0
 
-        for q_id in q_ids:
-            q = db.questions.find_one({"_id": q_id})
-            if not q:
-                print(f"⚠ Question {q_id} not found. Skipping...")
-                continue
-
-            is_correct = random.choice([True, False])
-            awarded = q["marks"] if is_correct else 0
-            score += awarded
-
+        for qid in qids:
+            q = q_map.get(str(qid))
+            if not q: continue
+            correct = random.choice([True, False])
+            marks = q["marks"]
             topic = q["topic"]
-            topic_scores.setdefault(topic, []).append(awarded)
-
-            responses.append({
-                "question": q_id,
-                "selectedOptionIndex": random.randint(0, len(q["options"]) - 1) if q["options"] else None,
-                "isCorrect": is_correct,
+            level = q["difficulty"]
+            diff_val = {"Easy": 1, "Medium": 2, "Hard": 3}[level]
+            response = {
+                "question": qid,
+                "isCorrect": correct,
                 "topic": topic,
-                "marksAwarded": awarded
-            })
+                "quesLevel": level,
+                "marksAwarded": marks if correct else 0,
+                "selectedOptionIndex": 0
+            }
+            responses.append(response)
+            total_score += marks if correct else 0
+            total_marks += marks
+            total_diff += diff_val
 
-        if not responses:
-            print(f"⚠ No responses generated for test {test_id}. Skipping...")
-            continue
+            key = difficulty_map[level]
+            q_stats[key]["attempted"] += 1
+            if correct:
+                q_stats[key]["correct"] += 1
 
-        topicWisePerformance = {k: round(sum(v)/len(v), 2) for k, v in topic_scores.items()}
+            topic_perf[topic] = topic_perf.get(topic, 0) + (marks if correct else 0)
+            topic_marks[topic] = topic_marks.get(topic, 0) + marks
 
-        test_attempts.append({
-            "student": student_id,
-            "test": test_id,
+        # Calculate accuracy & topic %
+        for lvl in q_stats:
+            att = q_stats[lvl]["attempted"]
+            cor = q_stats[lvl]["correct"]
+            q_stats[lvl]["accuracy"] = round(cor / att, 2) if att > 0 else 0
+
+        topicWisePerformance = {
+            topic: round((topic_perf[topic] / topic_marks[topic]) * 100)
+            for topic in topic_perf
+        }
+
+        attempt = {
+            "student": sid,
+            "test": tid,
             "responses": responses,
             "totalMarks": total_marks,
-            "score": score,
+            "score": total_score,
+            "avgTopicDifficulty": round(total_diff / 5, 2),
+            "overallAccuracy": round(total_score / total_marks, 2),
+            "percentage": round((total_score / total_marks) * 100, 2),
             "status": "Submitted",
+            "timeTaken": random.randint(300, 1000),
+            "questionLevelStats": q_stats,
             "topicWisePerformance": topicWisePerformance,
-            "avgQuestionDifficulty": round(random.uniform(1.0, 2.0), 1),
-            "avgPreviousPerformance": round(random.uniform(30, 80), 2),
-            "labelCourseId": random.choice(course_ids),
-            "testType": test_type,
-            "createdAt": datetime.now(),
-            "updatedAt": datetime.now()
-        })
+            "avgQuestionDifficulty": round(total_diff / 5, 2),
+            "avgPreviousPerformance": round(random.uniform(30, 90), 2),
+            "labelCourseId": cid,
+            "testType": test["type"],
+            "testLevel": random.choice(["Beginner", "Medium", "Advance"]),
+            "performanceTrend": random.choice(["Improving", "Declining", "Stable"]),
+            "remarks": fake.sentence(),
+            "createdAt": datetime.utcnow(),
+            "updatedAt": datetime.utcnow()
+        }
 
-# STEP 8️⃣: Insert test attempts into DB
-print(f"📦 Prepared {len(test_attempts)} test attempts to insert...")
+        attempts.append(attempt)
 
-if test_attempts:
-    try:
-        db.testattempts.insert_many(test_attempts, ordered=False)
-        print(f"✅ Successfully inserted {len(test_attempts)} test attempts.")
-    except Exception as e:
-        print("❌ Insert failed! Error:", e)
+if attempts:
+    db.testattempts.insert_many(attempts)
+    print(f"\n✅ Successfully seeded full database with:")
+    print(f"   👤 Students: {len(student_ids)}")
+    print(f"   🧑‍🏫 Instructors: {len(teacher_ids)}")
+    print(f"   📚 Courses: {len(course_ids)}")
+    print(f"   🧪 Tests: {len(tests)}")
+    print(f"   ❓ Questions: {len(questions)}")
+    print(f"   🧠 Test Attempts: {len(attempts)}")
 else:
-    print("⚠ No valid test attempts to insert.")
+    print("❌ No test attempts inserted.")

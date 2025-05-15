@@ -3,6 +3,7 @@ const BASE_API_URL = import.meta.env.VITE_BASE_API_URL;
 
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
 import { userLoggedIn, userLoggedOut } from "../authSlice";
+import { recommendationApi } from "./recommendationApi";
 
 const USER_API = `${BASE_API_URL}/api/v1/user/`
 
@@ -32,6 +33,7 @@ export const authApi = createApi({
                 try {
                     const result = await queryFulfilled;
                     dispatch(userLoggedIn({user:result.data.user}));
+
                 } catch (error) {
                     console.log(error);
                 }
@@ -46,6 +48,7 @@ export const authApi = createApi({
             async onQueryStarted(_, {queryFulfilled, dispatch}) {
                 try { 
                     dispatch(userLoggedOut());
+                    dispatch(recommendationApi.util.resetApiState());
                 } catch (error) {
                     console.log(error);
                 }
