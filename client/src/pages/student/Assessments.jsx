@@ -11,17 +11,23 @@ const Assessments = ({ role }) => {
       <div className="max-w-7xl mx-auto p-6">
         <h2 className="font-bold text-3xl text-center mb-10">Our Assessments</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          
-          {isLoading || isError ? (
-            Array.from({ length: 8 }).map((_, index) => (
-              <AssessmentSkeleton key={index} />
-            ))
-          ) : (
-            data?.assessments?.map((assessment) => (
-              
-              <AssessmentCard key={assessment._id} assessment={assessment} role={role} />
-            ))
-          )}
+          {isLoading ? (
+  Array.from({ length: 4 }).map((_, index) => (
+    <AssessmentSkeleton key={index} />
+  ))
+) : isError ? (
+  <div className="col-span-full text-center text-gray-500 dark:text-gray-300 text-lg font-medium">
+    <pre>
+
+    No Assessments Found! 
+     Explore our courses
+    </pre>
+  </div>
+) : (
+  data?.assessments?.map((assessment) => (
+    <AssessmentCard key={assessment._id} assessment={assessment} role={role} />
+  ))
+)}
 
         </div>
       </div>
@@ -33,7 +39,7 @@ export default Assessments
 
 const AssessmentSkeleton = () => {
   return (
-    <div className="bg-white shadow-md hover:shadow-lg transition-shadow rounded-lg overflow-hidden">
+    <div className="bg-white dark:bg-gray-900 shadow-md hover:shadow-lg transition-shadow rounded-lg overflow-hidden">
       <Skeleton className="w-full h-36" />
       <div className="px-5 py-4 space-y-3">
         <Skeleton className="h-6 w-3/4" />
@@ -47,5 +53,5 @@ const AssessmentSkeleton = () => {
         <Skeleton className="h-4 w-1/4" />
       </div>
     </div>
-  )
-}
+  );
+};

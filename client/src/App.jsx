@@ -26,6 +26,9 @@ import CreateTest from "./pages/admin/assesment/CreateTest";
 import CreateQuestions from "./pages/admin/assesment/CreateQuestions";
 import AssessmentDetail from "./pages/student/AssessmentDetail";
 import HomePage from "./layout/HomePage"
+import ForumHome from "./features/forums/pages/ForumHome";
+import PostDetails from "./features/forums/pages/PostDetails";
+import NewPost from "./features/forums/pages/NewPost";
 const appRouter = createBrowserRouter([
   {
     path: "/",
@@ -56,6 +59,30 @@ const appRouter = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <Profile />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "forum",
+        element: (
+          <ProtectedRoute>
+            <ForumHome />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "forum/:postId",
+        element: (
+          <ProtectedRoute>
+            <PostDetails />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "create/forum",
+        element: (
+          <ProtectedRoute>
+            <NewPost />
           </ProtectedRoute>
         ),
       },

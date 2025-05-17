@@ -96,6 +96,11 @@ const Navbar = () => {
                   >
                     Profile
                   </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onSelect={() => navigateAndClose("/forum")}
+                  >
+                    Forums
+                  </DropdownMenuItem>
                   <DropdownMenuItem onSelect={logoutHandler}>
                     Log out
                   </DropdownMenuItem>
