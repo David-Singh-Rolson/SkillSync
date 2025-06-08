@@ -1,121 +1,110 @@
 // View post + comments
-import React from 'react'
+"use client";
 
-"use client"
-
-import { useState } from "react"
-import { Heart, MessageSquare, Share2, Bookmark, MoreHorizontal } from "lucide-react"
-import { Avatar } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import CommentCard from '../components/CommentCard'
-import ReplyBox from '../components/ReplyBox'
+import { useEffect, useState } from "react";
+import {
+  Heart,
+  MessageSquare,
+  Share2,
+  Bookmark,
+  MoreHorizontal,
+} from "lucide-react";
+import { Avatar } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import CommentCard from "../components/CommentCard";
+import ReplyBox from "../components/ReplyBox";
+import { useParams } from "react-router-dom";
+import { useGetPostDetailsByIdQuery } from "../api/forumApi";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  useCreateCommentMutation,
+  useGetCommentsByPostIdQuery,
+} from "../api/commentApi";
+import { formatDistanceToNow } from "date-fns";
 
 const PostDetails = () => {
   // Sample data - in a real app this would come from props or API
-  const [post] = useState({
-    id: 1,
-    title: "Member required for graph-e-thon",
-    content:
-      "hello, i am looking for 2 team members for graph-e-thon preferably from deemed/hill campus who are familiar or willing to work with technologies like android, computer vision, tensor flow lite and who are available on the dates and enthusiastic for the hackathon. Interested one's can drop their LinkedIn or message me to discuss the idea further.",
-    author: {
-      name: "Shivam Mahendru",
-      avatar: "/placeholder.svg?height=48&width=48",
-      createdAt: "a year ago",
-    },
-    likes: 24,
-    bookmarked: false,
-  })
+  const user = useSelector((state) => state.auth.user?._id);
+  const currentUser = useSelector((state) => state.auth.user);
+  const { postId } = useParams();
+  const [createComment, {}] = useCreateCommentMutation();
+  const {
+    data: postDetails,
+    isLoading: detailLoading,
+    isError: detailError,
+    isSuccess: detailSuccess,
+  } = useGetPostDetailsByIdQuery(postId);
+  // const{data:commentData,isError:getCommentError,isSuccess:getCommentSuccess}=useGetCommentsByPostIdQuery(postId)
+  // useEffect(() => {
+  console.log("comments", postDetails);
+  // }, [commentData]);
+  const dispatch = useDispatch();
+  const [imgError, setImgError] = useState(false);
 
-  const [comments, setComments] = useState([
-    {
-      id: 1,
-      author: {
-        name: "Gaurav Jugran",
-        avatar: "/placeholder.svg?height=40&width=40",
-        initials: "GJ",
-      },
-      content: "Interested: Gaurav Jugran",
-      details: ["B.Tech CSE", "8218527934", "ggauri588@gmail.com"],
-      createdAt: "a year ago",
-      likes: 3,
-      showReplyBox: false,
-      replies: [],
-    },
-    {
-      id: 2,
-      author: {
-        name: "Priyanka Sharma",
-        avatar: "",
-        initials: "PS",
-      },
-      content: "",
-      createdAt: "a year ago",
-      likes: 0,
-      showReplyBox: false,
-      replies: [],
-    },
-  ])
+  const [activeReplyBoxes, setActiveReplyBoxes] = useState({});
 
   // Toggle reply box visibility
   const toggleReplyBox = (commentId) => {
-    setComments(
-      comments.map((comment) =>
-        comment.id === commentId ? { ...comment, showReplyBox: !comment.showReplyBox } : comment,
-      ),
-    )
-  }
+    setActiveReplyBoxes((prev) => ({
+      ...prev,
+      [commentId]: !prev[commentId],
+    }));
+  };
 
   // Add a new comment
-  const addComment = (content) => {
-    if (!content.trim()) return
-
+  const addComment = async (content) => {
+    if (!content.trim()) return;
     const newComment = {
-      id: comments.length + 1,
-      author: {
-        name: "Current User",
-        avatar: "/placeholder.svg?height=40&width=40",
-        initials: "CU",
-      },
-      content,
-      createdAt: "just now",
-      likes: 0,
-      showReplyBox: false,
-      replies: [],
-    }
+      commentContent: content,
+      postId,
+      commentedBy: user,
+    };
+    try {
+      const { data } = await createComment(newComment);
 
-    setComments([...comments, newComment])
-  }
+      if (data?.comment) {
+        dispatch(
+          forumApi.util.updateQueryData(
+            "getPostDetailsById",
+            postId,
+            (draft) => {
+              // Push the new comment to the cached commentIds
+              draft.post.commentIds.push(data.comment);
+            }
+          )
+        );
+      }
+    } catch (error) {
+      console.log("Error creating comment:", error);
+    }
+  };
 
   // Add a reply to a comment
   const addReply = (commentId, content) => {
-    if (!content.trim()) return
+    if (!content.trim()) return;
+    const newReply={
+      replyContent:content,
+      commentId,
+      repliedBy:user,
+    }
 
-    setComments(
-      comments.map((comment) => {
-        if (comment.id === commentId) {
-          const newReply = {
-            id: comment.replies.length + 1,
-            author: {
-              name: "Current User",
-              avatar: "/placeholder.svg?height=32&width=32",
-              initials: "CU",
-            },
-            content,
-            createdAt: "just now",
-            likes: 0,
-          }
-          return {
-            ...comment,
-            replies: [...comment.replies, newReply],
-            showReplyBox: false,
-          }
-        }
-        return comment
-      }),
-    )
-  }
+    try {
+      
+    } catch (error) {
+      console.log("Error creating reply:", error);
+    }
+    
+  };
+
+  const time = postDetails?.post?.updatedAt;
+  console.log("time", currentUser);
+
+  // const timeAgoRaw = formatDistanceToNow(new Date(time), {
+  //     addSuffix: true,
+  //   });
+  //   const timestamp = timeAgoRaw.replace(/^about\s/, "");
 
   return (
     <div className="flex flex-col lg:flex-row gap-6 p-4 max-w-7xl mx-auto bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-950 min-h-screen">
@@ -128,11 +117,30 @@ const PostDetails = () => {
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
                 <Avatar className="h-12 w-12 ring-2 ring-purple-100 dark:ring-purple-900">
-                  <img src={post.author.avatar || "/placeholder.svg"} alt={post.author.name} className="object-cover" />
+                  {!postDetails?.createdBy?.photoUrl || imgError ? (
+                    <div className="bg-purple-200 text-purple-800 dark:bg-purple-900 dark:text-purple-200 w-full h-full flex items-center justify-center font-semibold">
+                      {postDetails?.createdBy?.name
+                        ?.split(" ")
+                        .map((w) => w[0])
+                        .join("")
+                        .toUpperCase()}
+                    </div>
+                  ) : (
+                    <img
+                      src={postDetails?.createdBy?.photoUrl}
+                      alt={postDetails?.createdBy?.name}
+                      className="object-cover w-full h-full"
+                      onError={() => setImgError(true)}
+                    />
+                  )}
                 </Avatar>
                 <div>
-                  <h3 className="font-semibold text-lg">{post.author.name}</h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">{post.author.createdAt}</p>
+                  <h3 className="font-semibold text-lg">
+                    {postDetails?.post?.createdBy?.name}
+                  </h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    {"h"}
+                  </p>
                 </div>
               </div>
               <Button variant="ghost" size="icon" className="rounded-full">
@@ -140,9 +148,13 @@ const PostDetails = () => {
               </Button>
             </div>
 
-            <h2 className="text-2xl font-bold mb-3 text-gray-800 dark:text-gray-100">{post.title}</h2>
+            <h2 className="text-2xl font-bold mb-3 text-gray-800 dark:text-gray-100">
+              {postDetails?.post?.postTitle}
+            </h2>
 
-            <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">{post.content}</p>
+            <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+              {postDetails?.post?.postContent}
+            </p>
 
             <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-800">
               <div className="flex items-center gap-4">
@@ -152,7 +164,7 @@ const PostDetails = () => {
                   className="flex items-center gap-1 text-rose-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/20"
                 >
                   <Heart className="h-5 w-5" />
-                  <span>{post.likes}</span>
+                  <span>{postDetails?.post?.likes}</span>
                 </Button>
                 <Button
                   variant="ghost"
@@ -160,7 +172,7 @@ const PostDetails = () => {
                   className="flex items-center gap-1 text-blue-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20"
                 >
                   <MessageSquare className="h-5 w-5" />
-                  <span>{comments.length}</span>
+                  {/* <span>{comments.length}</span> */}
                 </Button>
                 <Button
                   variant="ghost"
@@ -186,34 +198,49 @@ const PostDetails = () => {
           <ReplyBox
             placeholder="Add a comment..."
             onSubmit={addComment}
-            avatarUrl="/placeholder.svg?height=40&width=40"
-            avatarInitials="CU"
+            avatarUrl={currentUser?.photoUrl}
+            avatarInitials={currentUser?.name
+              ?.split(" ")
+              .map((w) => w[0])
+              .join("")}
           />
         </div>
 
         {/* Comments */}
         <div className="space-y-6">
-          <h3 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Comments ({comments.length})</h3>
+          <h3 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
+            {/* Comments ({comments.length}) */}
+          </h3>
 
-          {comments.map((comment) => (
-            <div key={comment.id} className="mb-6">
-              <CommentCard comment={comment} onReplyClick={() => toggleReplyBox(comment.id)} />
+          {postDetails?.post?.commentIds?.map((comment) => (
+            <div key={comment._id} className="mb-6">
+              <CommentCard
+                comment={comment}
+                onReplyClick={() => toggleReplyBox(comment._id)}
+              />
 
-              {comment.replies.length > 0 && (
+              {Array.isArray(comment.replies) && comment.replies.length > 0 && (
                 <div className="ml-12 mt-4 space-y-4">
                   {comment.replies.map((reply) => (
-                    <CommentCard key={reply.id} comment={reply} isReply={true} />
+                    <CommentCard
+                      key={reply.id}
+                      comment={reply}
+                      isReply={true}
+                    />
                   ))}
                 </div>
               )}
 
-              {comment.showReplyBox && (
+              {activeReplyBoxes[comment._id] && (
                 <div className="ml-12 mt-4">
                   <ReplyBox
                     placeholder="Write a reply..."
-                    onSubmit={(content) => addReply(comment.id, content)}
-                    avatarUrl="/placeholder.svg?height=32&width=32"
-                    avatarInitials="CU"
+                    onSubmit={(content) => addReply(comment._id, content)}
+                    avatarUrl={currentUser?.photoUrl}
+                    avatarInitials={currentUser?.name
+                      ?.split(" ")
+                      .map((w) => w[0])
+                      .join("")}
                     isReply={true}
                   />
                 </div>
@@ -250,11 +277,19 @@ const PostDetails = () => {
             </h3>
             <div className="flex items-center gap-3">
               <Avatar className="h-14 w-14 ring-2 ring-purple-100 dark:ring-purple-900">
-                <img src={post.author.avatar || "/placeholder.svg"} alt={post.author.name} className="object-cover" />
+                <img
+                  src={postDetails?.createdBy?.photoUrl || "h"}
+                  alt={postDetails?.post?.createdBy?.name}
+                  className="object-cover"
+                />
               </Avatar>
               <div>
-                <p className="font-medium text-lg">{post.author.name}</p>
-                <p className="text-sm text-gray-500">{post.author.createdAt}</p>
+                <p className="font-medium text-lg">
+                  {postDetails?.post?.createdBy?.name}
+                </p>
+                <p className="text-sm text-gray-500">
+                  {postDetails?.createdAt}
+                </p>
               </div>
             </div>
           </div>
@@ -284,12 +319,26 @@ const PostDetails = () => {
               PARTICIPANTS LIST
             </h3>
             <div className="flex flex-wrap gap-2">
-              <Badge variant="outline" className="bg-gray-100 text-gray-800 hover:bg-gray-200 px-3 py-1 rounded-full">
-                Student
-              </Badge>
-              <Badge variant="outline" className="bg-blue-100 text-blue-800 hover:bg-blue-200 px-3 py-1 rounded-full">
-                Instructor
-              </Badge>
+              {postDetails?.post?.participants?.map((role, idx) => {
+                let badgeStyle = "bg-gray-100 text-gray-800 hover:bg-gray-200"; // Default
+
+                if (role === "student")
+                  badgeStyle = "bg-gray-100 text-gray-800 hover:bg-gray-200";
+                else if (role === "instructor")
+                  badgeStyle = "bg-blue-100 text-blue-800 hover:bg-blue-200";
+                else if (role === "admin")
+                  badgeStyle = "bg-red-100 text-red-800 hover:bg-red-200";
+
+                return (
+                  <Badge
+                    key={idx}
+                    variant="outline"
+                    className={`${badgeStyle} px-3 py-1 rounded-full capitalize`}
+                  >
+                    {role}
+                  </Badge>
+                );
+              })}
             </div>
           </div>
         </Card>
@@ -297,14 +346,18 @@ const PostDetails = () => {
         <Card className="overflow-hidden border-none shadow-lg">
           <div className="bg-gradient-to-r from-purple-500 to-blue-500 h-2"></div>
           <div className="p-6">
-            <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">Related Posts</h3>
+            <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">
+              Related Posts
+            </h3>
             <div className="space-y-4">
               <div className="flex items-start gap-3 pb-3 border-b border-gray-100 dark:border-gray-800">
                 <div className="w-12 h-12 rounded-md bg-gradient-to-br from-purple-400 to-blue-500 flex items-center justify-center text-white font-bold">
                   H
                 </div>
                 <div>
-                  <p className="font-medium text-sm">Hackathon team for AI project</p>
+                  <p className="font-medium text-sm">
+                    Hackathon team for AI project
+                  </p>
                   <p className="text-xs text-gray-500">2 days ago</p>
                 </div>
               </div>
@@ -313,7 +366,9 @@ const PostDetails = () => {
                   T
                 </div>
                 <div>
-                  <p className="font-medium text-sm">TensorFlow workshop this weekend</p>
+                  <p className="font-medium text-sm">
+                    TensorFlow workshop this weekend
+                  </p>
                   <p className="text-xs text-gray-500">1 week ago</p>
                 </div>
               </div>
@@ -322,7 +377,9 @@ const PostDetails = () => {
                   C
                 </div>
                 <div>
-                  <p className="font-medium text-sm">Computer Vision study group</p>
+                  <p className="font-medium text-sm">
+                    Computer Vision study group
+                  </p>
                   <p className="text-xs text-gray-500">2 weeks ago</p>
                 </div>
               </div>
@@ -331,7 +388,7 @@ const PostDetails = () => {
         </Card>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default PostDetails
+export default PostDetails;

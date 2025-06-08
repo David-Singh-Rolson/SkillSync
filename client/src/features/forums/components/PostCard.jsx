@@ -1,16 +1,15 @@
 import { Clock, Heart, Share2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
-
+import { formatDistanceToNow } from "date-fns";
 const PostCard = ({
-  timestamp,
-  title,
-  content,
-  author = { name: "Name", role: "Admin" },
+  createdAt,
+  postTitle,
+  postContent,
+  role,
   tags,
   likes,
-  postId,
-  isLoading = false,
+  _id,
 }) => {
   // Role badge color mapping
   const roleBadgeColors = {
@@ -18,12 +17,16 @@ const PostCard = ({
     instructor: "bg-purple-100 text-purple-800",
     admin: "bg-red-100 text-red-800",
   };
+  const timeAgoRaw = formatDistanceToNow(new Date(createdAt), {
+    addSuffix: true,
+  });
+  const timestamp = timeAgoRaw.replace(/^about\s/, "");
   const roleBadgeColor =
-    roleBadgeColors[author.role?.toLowerCase()] || roleBadgeColors.student;
-    const handleLike = (e) => {
-        // your like logic
-        toast.success("Liked")
-};
+    roleBadgeColors[role.role?.toLowerCase()] || roleBadgeColors.student;
+  const handleLike = (e) => {
+    // your like logic
+    toast.success("Liked");
+  };
   const handleShare = () => {
     const url = `${window.location.origin}/forum/${postId}`;
     navigator.clipboard
@@ -37,9 +40,6 @@ const PostCard = ({
       });
   };
 
-  if (isLoading) {
-    return <PostCardSkeleton />;
-  }
   return (
     <div
       className="max-w-3xl mx-auto overflow-hidden rounded-xl shadow-lg bg-gradient-to-br from-white to-gray-50  border-gray-100 dark:from-gray-800 dark:to-gray-900 
@@ -66,24 +66,27 @@ const PostCard = ({
           <div
             className={`px-3 py-1 rounded-full text-xs font-medium ${roleBadgeColor}`}
           >
-            {author.role || "Student"}
+            {role || "Student"}
           </div>
         </div>
 
-        {/* Post Title */}
-    <Link to={`/forum/${postId}`} className="block group">
-
-        <h2 className="text-2xl font-bold text-gray-800 dark:text-white  mb-4 hover:text-blue-600 hover:underline transition-colors">
-          {title || (
-            <span className="text-gray-400 italic">No Title available</span>
-          )}
-        </h2>
-</Link>
-        {/* Post Content */}
+        {/* Post PostTitle */}
+        <Link to={`/forum/details/${_id}`} className="block group">
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-white  mb-4 hover:text-blue-600 hover:underline transition-colors">
+            {postTitle || (
+              <span className="text-gray-400 italic">
+                No PostTitle available
+              </span>
+            )}
+          </h2>
+        </Link>
+        {/* Post PostContent */}
         <div className="text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
           <p>
-            {content || (
-              <span className="text-gray-400 italic">No content available</span>
+            {postContent || (
+              <span className="text-gray-400 italic">
+                No postcontent available
+              </span>
             )}
           </p>
         </div>
@@ -104,7 +107,10 @@ const PostCard = ({
         <div className="flex justify-between items-center">
           <div className="flex items-center space-x-4">
             {/* <button className="flex items-center space-x-1 text-gray-500 hover:text-red-500 transition-colors"> */}
-            <button onClick={handleLike} className="flex items-center space-x-1 text-gray-500 dark:text-gray-300 hover:text-red-500 transition-colors dark:hover:text-red-500 transition-colors">
+            <button
+              onClick={handleLike}
+              className="flex items-center space-x-1 text-gray-500 dark:text-gray-300 hover:text-red-500  dark:hover:text-red-500 transition-colors"
+            >
               <Heart className="h-5 w-5" />
               <span>{likes}</span>
             </button>
@@ -119,48 +125,7 @@ const PostCard = ({
         </div>
       </div>
     </div>
-
   );
 };
 
 export default PostCard;
-
-const PostCardSkeleton = () => {
-  return (
-      <div className="max-w-3xl mx-auto overflow-hidden rounded-xl shadow-lg bg-white border border-gray-100 animate-pulse">
-        {/* Card Header with gradient */}
-        <div className="bg-gray-200 h-3"></div>
-        <div className="bg-gray-200 dark:bg-gray-700 h-3"></div>
-        <div className="p-6">
-          {/* Post Header - Time and Role Badge */}
-          <div className="flex justify-between items-center mb-3">
-            <div className="bg-gray-200 h-4 w-24 rounded"></div>
-            <div className="bg-gray-200 h-6 w-20 rounded-full"></div>
-          </div>
-
-          {/* Post Title */}
-          <div className="bg-gray-300 h-8 w-3/4 rounded mb-4"></div>
-
-          {/* Post Content */}
-          <div className="space-y-2 mb-6">
-            <div className="bg-gray-200 h-4 w-full rounded"></div>
-            <div className="bg-gray-200 h-4 w-full rounded"></div>
-            <div className="bg-gray-200 h-4 w-2/3 rounded"></div>
-          </div>
-
-          {/* Tags */}
-          <div className="flex flex-wrap gap-2 mb-6">
-            <div className="bg-gray-200 h-6 w-16 rounded-full"></div>
-            <div className="bg-gray-200 h-6 w-20 rounded-full"></div>
-            <div className="bg-gray-200 h-6 w-24 rounded-full"></div>
-          </div>
-
-          {/* Interaction Bar */}
-          <div className="flex justify-between items-center">
-            <div className="bg-gray-200 h-6 w-16 rounded"></div>
-            <div className="bg-gray-200 h-6 w-20 rounded"></div>
-          </div>
-        </div>
-      </div>
-  );
-};

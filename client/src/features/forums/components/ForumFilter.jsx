@@ -16,7 +16,6 @@ export default function ForumFilter({ onFilterChange }) {
   const handleRoleChange = (role) => {
     setSelectedRoles((prev) => {
       const newRoles = prev.includes(role) ? prev.filter((r) => r !== role) : [...prev, role]
-
       onFilterChange({ roles: newRoles, timeSort })
       return newRoles
     })

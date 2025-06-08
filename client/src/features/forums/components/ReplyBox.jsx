@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 const ReplyBox = ({ placeholder, onSubmit, avatarUrl, avatarInitials, isReply = false }) => {
   const [content, setContent] = useState("")
   const [isFocused, setIsFocused] = useState(false)
+      const [imgError, setImgError] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -19,15 +20,21 @@ const ReplyBox = ({ placeholder, onSubmit, avatarUrl, avatarInitials, isReply = 
 
   return (
     <form onSubmit={handleSubmit} className="flex gap-3 w-full">
-      <Avatar className={`${isReply ? "h-8 w-8" : "h-10 w-10"} ring-2 ring-purple-100 dark:ring-purple-900`}>
-        {avatarUrl ? (
-          <img src={avatarUrl || "/placeholder.svg"} alt="Your avatar" className="object-cover" />
-        ) : (
-          <div className="bg-purple-200 text-purple-800 dark:bg-purple-900 dark:text-purple-200 w-full h-full flex items-center justify-center font-semibold">
-            {avatarInitials}
-          </div>
-        )}
-      </Avatar>
+
+<Avatar className={`${isReply ? "h-8 w-8" : "h-10 w-10"} ring-2 ring-purple-100 dark:ring-purple-900`}>
+  {!avatarUrl || imgError ? (
+    <div className="bg-purple-200 text-purple-800 dark:bg-purple-900 dark:text-purple-200 w-full h-full flex items-center justify-center font-semibold">
+      {avatarInitials}
+    </div>
+  ) : (
+    <img
+      src={avatarUrl}
+      alt="Your avatar"
+      className="object-cover"
+      onError={() => setImgError(true)}
+    />
+  )}
+</Avatar>
 
       <div className="flex-1 relative">
         <div

@@ -11,6 +11,10 @@ import { recommendationApi } from "@/features/api/recommendationApi";
 import { mcqApi } from "@/features/api/mcqBuilderApi";
 import { performanceApi } from "@/features/api/performanceApi";
 import { otpApi } from "@/features/api/otpApi";
+
+import { forumApi } from "@/features/forums/api/forumApi";
+import { commentApi } from "@/features/forums/api/commentApi";
+
 export const appStore = configureStore({
   reducer: rootRedcuer,
   middleware: (defaultMiddleware) =>
@@ -25,7 +29,9 @@ export const appStore = configureStore({
       recommendationApi.middleware,
       mcqApi.middleware,
       performanceApi.middleware,
-      otpApi.middleware
+      otpApi.middleware,
+      forumApi.middleware,
+      commentApi.middleware
     ),
 });
 

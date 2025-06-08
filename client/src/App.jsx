@@ -71,7 +71,7 @@ const appRouter = createBrowserRouter([
         ),
       },
       {
-        path: "forum/:postId",
+        path: "forum/details/:postId",
         element: (
           <ProtectedRoute>
             <PostDetails />

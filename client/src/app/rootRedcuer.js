@@ -13,6 +13,9 @@ import { mcqApi } from "@/features/api/mcqBuilderApi";
 import { performanceApi } from "@/features/api/performanceApi";
 import { otpApi } from "@/features/api/otpApi";
 
+import { forumApi } from "@/features/forums/api/forumApi";
+import { commentApi } from "@/features/forums/api/commentApi";
+
 const rootRedcuer = combineReducers({
     [authApi.reducerPath]:authApi.reducer,
     [courseApi.reducerPath]:courseApi.reducer,
@@ -25,6 +28,8 @@ const rootRedcuer = combineReducers({
     [mcqApi.reducerPath]:mcqApi.reducer,
     [performanceApi.reducerPath]:performanceApi.reducer,
     [otpApi.reducerPath]:otpApi.reducer,
+    [forumApi.reducerPath]:forumApi.reducer,
+    [commentApi.reducerPath]:commentApi.reducer,
     auth:authReducer, 
     ui:uiReducer
 });

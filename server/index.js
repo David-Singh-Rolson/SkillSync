@@ -15,6 +15,9 @@ import recommendationRoute from "./routes/recommendation.route.js"
 import generateMCQRoute from "./routes/mcqBuilder.route.js"
 import performanceRoute from "./routes/performance.route.js"
 import otpRoute from "./routes/otp.route.js"
+
+import forumRoute from "./features/forums/routes/forum.route.js"
+import commentRoute from "./features/forums/routes/comment.route.js"
 import path from "path"
 dotenv.config({});
 
@@ -47,6 +50,8 @@ app.use("/api/v1", recommendationRoute);
 app.use("/api/v1", generateMCQRoute);
 app.use("/api/v1", performanceRoute);
 app.use("/api/v1/otp", otpRoute);
+app.use("/api/v1/forum", forumRoute);
+app.use("/api/v1/forum/comment", commentRoute);
 
 app.use(express.static(path.join(_dirname,"/client/dist")))
 
